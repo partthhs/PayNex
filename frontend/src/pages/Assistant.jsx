@@ -5,6 +5,7 @@ import { PRODUCTS, searchProducts } from '../data/products'
 import { SUGGESTED_PROMPTS } from '../data/sampleData'
 import { useCompare } from '../context/CompareContext'
 import { useCart } from '../context/CartContext'
+import { aiService } from '../services/aiService'
 import Button from '../components/ui/Button'
 import PriceDisplay from '../components/ui/PriceDisplay'
 
@@ -141,15 +142,40 @@ export default function Assistant() {
     return results.slice(0, 3)
   }
 
-  const send = (text = input.trim()) => {
+  const [conversationId, setConversationId] = useState(null)
+
+  const send = async (text = input.trim()) => {
     if (!text) return
     const userMsg = { id: newId(), role: 'user', text }
     setMessages(m => [...m, userMsg])
     setInput('')
     setTyping(true)
 
-    setTimeout(() => {
-      setTyping(false)
+    try {
+      const res = await aiService.chat({
+        message: text,
+        budget: budget ? parseFloat(budget) : null,
+        conversationId,
+      })
+      if (res.conversation_id) setConversationId(res.conversation_id)
+
+      const normalizedProducts = (res.products || []).map(p => ({
+        ...p,
+        id: p.slug || String(p.id),
+        image: p.image_url || p.image,
+        originalPrice: p.original_price ?? p.originalPrice,
+      }))
+
+      const aiMsg = {
+        id: newId(),
+        role: 'ai',
+        text: res.message,
+        products: normalizedProducts,
+        note: res.note || 'AI evaluated from verified product catalog.',
+      }
+      setMessages(m => [...m, aiMsg])
+    } catch {
+      // Graceful local fallback if offline or backend error
       const products = findProducts(text)
       const aiMsg = {
         id: newId(),
@@ -158,10 +184,12 @@ export default function Assistant() {
           ? `Found ${products.length} matching product${products.length > 1 ? 's' : ''} based on your specifications:`
           : `No exact specification matches found within that filter. Here are recommended alternatives:`,
         products: products.length ? products : PRODUCTS.slice(0, 3),
-        note: 'Recommendations evaluated from current catalog.',
+        note: 'Recommendations evaluated from local catalog.',
       }
       setMessages(m => [...m, aiMsg])
-    }, 1200)
+    } finally {
+      setTyping(false)
+    }
   }
 
   const clear = () => setMessages([])

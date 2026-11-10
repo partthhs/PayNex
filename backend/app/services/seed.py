@@ -1,0 +1,248 @@
+"""
+Database seeder — populates Categories and Products from the frontend catalog.
+Run once at startup if the DB is empty.
+"""
+from sqlalchemy.orm import Session
+from app.models import Category, Product
+
+
+CATEGORIES = [
+    {"slug": "laptops",      "name": "Laptops",       "icon": "laptop",        "sort_order": 1},
+    {"slug": "smartphones",  "name": "Smartphones",   "icon": "smartphone",    "sort_order": 2},
+    {"slug": "headphones",   "name": "Headphones",    "icon": "headphones",    "sort_order": 3},
+    {"slug": "tablets",      "name": "Tablets",       "icon": "tablet",        "sort_order": 4},
+    {"slug": "cameras",      "name": "Cameras",       "icon": "camera",        "sort_order": 5},
+    {"slug": "smartwatches", "name": "Smartwatches",  "icon": "watch",         "sort_order": 6},
+    {"slug": "speakers",     "name": "Speakers",      "icon": "speaker",       "sort_order": 7},
+    {"slug": "accessories",  "name": "Accessories",   "icon": "package",       "sort_order": 8},
+]
+
+PRODUCTS = [
+    {
+        "slug": "laptop-001",
+        "name": "MacBook Air M3",
+        "brand": "Apple",
+        "category_slug": "laptops",
+        "price": 119900,
+        "original_price": None,
+        "rating": 4.8,
+        "reviews_count": 3241,
+        "image_url": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=80",
+        "description": "The MacBook Air M3 is Apple's thinnest and lightest laptop, powered by the blazing-fast M3 chip. With up to 18 hours of battery life and a stunning Liquid Retina display, it's the perfect everyday laptop.",
+        "short_description": "Apple's most popular laptop with M3 chip, 18-hour battery, and all-day performance.",
+        "features": ["Apple M3 chip with 8-core CPU", "Up to 18 hours battery life", "13.6\" Liquid Retina display", "8GB unified memory (configurable to 24GB)", "MagSafe charging", "Fanless silent design"],
+        "specs": {"Processor": "Apple M3 (8-core CPU, 10-core GPU)", "Memory": "8GB Unified Memory", "Storage": "256GB SSD", "Display": "13.6\" Liquid Retina (2560x1664)", "Battery": "Up to 18 hours", "Weight": "1.24 kg", "OS": "macOS Sonoma", "Ports": "2x Thunderbolt 3, MagSafe 3, 3.5mm"},
+        "badge": "Best Seller",
+        "in_stock": True,
+    },
+    {
+        "slug": "laptop-002",
+        "name": "Dell XPS 15",
+        "brand": "Dell",
+        "category_slug": "laptops",
+        "price": 134999,
+        "original_price": 155000,
+        "rating": 4.6,
+        "reviews_count": 1872,
+        "image_url": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=500&q=80",
+        "description": "The Dell XPS 15 combines a stunning 15.6\" OLED display with powerful Intel Core Ultra processors and NVIDIA RTX graphics.",
+        "short_description": "Premium 15\" laptop with OLED display and RTX graphics for professionals.",
+        "features": ["Intel Core Ultra 7 processor", "NVIDIA GeForce RTX 4060", "15.6\" 3.5K OLED touch display", "16GB DDR5 RAM", "512GB NVMe SSD", "Thunderbolt 4 connectivity"],
+        "specs": {"Processor": "Intel Core Ultra 7 155H", "GPU": "NVIDIA RTX 4060 8GB", "Memory": "16GB DDR5", "Storage": "512GB NVMe SSD", "Display": "15.6\" 3.5K OLED (3456x2160)", "Battery": "Up to 13 hours", "Weight": "1.86 kg", "OS": "Windows 11 Home"},
+        "badge": "Deal",
+        "in_stock": True,
+    },
+    {
+        "slug": "phone-001",
+        "name": "Samsung Galaxy S24",
+        "brand": "Samsung",
+        "category_slug": "smartphones",
+        "price": 74999,
+        "original_price": 79999,
+        "rating": 4.5,
+        "reviews_count": 5120,
+        "image_url": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=500&q=80",
+        "description": "The Samsung Galaxy S24 brings Galaxy AI to your fingertips with the powerful Snapdragon 8 Gen 3 chip.",
+        "short_description": "Flagship Android phone with Galaxy AI and a stunning 50MP triple camera.",
+        "features": ["Snapdragon 8 Gen 3 processor", "50MP triple-camera system", "6.2\" Dynamic AMOLED 2X (120Hz)", "Galaxy AI features", "4000mAh battery with 25W charging", "7 years of OS updates"],
+        "specs": {"Processor": "Snapdragon 8 Gen 3", "Display": "6.2\" Dynamic AMOLED 2X, 120Hz", "Camera": "50MP + 12MP + 10MP", "Battery": "4000mAh, 25W wired", "Storage": "128GB / 256GB", "RAM": "8GB", "OS": "Android 14, One UI 6.1", "5G": "Yes"},
+        "badge": None,
+        "in_stock": True,
+    },
+    {
+        "slug": "phone-002",
+        "name": "iPhone 15 Pro",
+        "brand": "Apple",
+        "category_slug": "smartphones",
+        "price": 134900,
+        "original_price": None,
+        "rating": 4.8,
+        "reviews_count": 7340,
+        "image_url": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=500&q=80",
+        "description": "The iPhone 15 Pro features the A17 Pro chip — the first 3nm chip in a smartphone — along with a titanium frame.",
+        "short_description": "Apple's most powerful iPhone with A17 Pro chip, titanium design and ProRes video.",
+        "features": ["A17 Pro chip (3nm)", "48MP main + 12MP ultrawide + 12MP 3x telephoto", "6.1\" Super Retina XDR ProMotion (120Hz)", "Titanium frame", "Action Button", "USB 3 / USB-C"],
+        "specs": {"Processor": "Apple A17 Pro (3nm)", "Display": "6.1\" OLED ProMotion 120Hz", "Camera": "48MP + 12MP UW + 12MP 3x Tele", "Battery": "Up to 23 hours video", "Storage": "128GB / 256GB / 512GB / 1TB", "Frame": "Grade 5 Titanium", "OS": "iOS 17", "USB-C": "USB 3 (up to 10Gbps)"},
+        "badge": "Best Seller",
+        "in_stock": True,
+    },
+    {
+        "slug": "headphones-001",
+        "name": "Sony WH-1000XM5",
+        "brand": "Sony",
+        "category_slug": "headphones",
+        "price": 26990,
+        "original_price": 34990,
+        "rating": 4.7,
+        "reviews_count": 4521,
+        "image_url": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80",
+        "description": "Industry-leading noise cancelling meets exceptional sound quality in Sony's flagship WH-1000XM5.",
+        "short_description": "Industry-leading ANC headphones with 30-hour battery and premium sound.",
+        "features": ["Industry-leading noise cancellation (8 mics)", "30-hour battery life (NC on)", "Multipoint connection (2 devices)", "Speak-to-chat technology", "LDAC and DSEE Extreme", "3-min quick charge = 3 hours"],
+        "specs": {"Type": "Over-ear, closed", "Driver": "30mm", "Frequency Response": "4Hz – 40,000Hz", "Battery Life": "30 hours (ANC on)", "Bluetooth": "5.2", "Codecs": "SBC, AAC, LDAC", "Weight": "250g", "Microphones": "8 (ANC + voice)"},
+        "badge": "Deal",
+        "in_stock": True,
+    },
+    {
+        "slug": "headphones-002",
+        "name": "Apple AirPods Pro 2",
+        "brand": "Apple",
+        "category_slug": "headphones",
+        "price": 24900,
+        "original_price": None,
+        "rating": 4.6,
+        "reviews_count": 6102,
+        "image_url": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80",
+        "description": "AirPods Pro 2 feature the H2 chip for up to 2x better noise cancellation than the first generation.",
+        "short_description": "Apple's best earbuds with H2 chip, Adaptive Audio and 6-hour battery.",
+        "features": ["H2 chip for superior ANC", "Adaptive Audio (ANC + Transparency blend)", "6 hours battery (30hrs with case)", "Personalized Spatial Audio", "IP54 rated (earbuds + case)", "Find My support"],
+        "specs": {"Type": "In-ear TWS", "Chip": "Apple H2", "Battery (buds)": "6 hours (ANC on)", "Battery (case)": "Up to 30 hours total", "Connectivity": "Bluetooth 5.3", "Noise Cancellation": "Active + Adaptive", "Rating": "IP54", "Charging": "USB-C / MagSafe / Qi"},
+        "badge": None,
+        "in_stock": True,
+    },
+    {
+        "slug": "tablet-001",
+        "name": "iPad Air M2",
+        "brand": "Apple",
+        "category_slug": "tablets",
+        "price": 59900,
+        "original_price": None,
+        "rating": 4.7,
+        "reviews_count": 2834,
+        "image_url": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=500&q=80",
+        "description": "The iPad Air with M2 chip delivers laptop-class performance in a thin and light design.",
+        "short_description": "Thin and powerful tablet with M2 chip, perfect for creativity and productivity.",
+        "features": ["Apple M2 chip", "11\" or 13\" Liquid Retina display", "Apple Pencil Pro support", "Magic Keyboard compatible", "All-day battery life", "USB-C with USB 3 speeds"],
+        "specs": {"Processor": "Apple M2", "Display": "11\" Liquid Retina (2360x1640)", "Storage": "128GB / 256GB / 512GB", "Battery": "Up to 10 hours", "Connectivity": "Wi-Fi 6E, optional 5G", "Camera": "12MP rear, 12MP ultrawide front", "OS": "iPadOS 17", "USB-C": "USB 3 (10Gbps)"},
+        "badge": "New",
+        "in_stock": True,
+    },
+    {
+        "slug": "camera-001",
+        "name": "Canon EOS R50",
+        "brand": "Canon",
+        "category_slug": "cameras",
+        "price": 65490,
+        "original_price": 72000,
+        "rating": 4.5,
+        "reviews_count": 1230,
+        "image_url": "https://images.unsplash.com/photo-1502920917128-1aa500764b41?auto=format&fit=crop&w=500&q=80",
+        "description": "The Canon EOS R50 is a compact mirrorless camera with a 24.2MP APS-C sensor.",
+        "short_description": "Compact mirrorless camera with 24.2MP sensor and AI subject tracking.",
+        "features": ["24.2MP APS-C CMOS sensor", "AI-powered subject tracking", "4K 30p video (no crop)", "Vari-angle touch LCD", "Built-in flash", "Wi-Fi and Bluetooth"],
+        "specs": {"Sensor": "24.2MP APS-C CMOS", "Processor": "DIGIC X", "AF System": "Dual Pixel CMOS AF II", "Video": "4K UHD 30p", "ISO": "100–32000 (expandable)", "Burst Speed": "15 fps (electronic)", "Weight": "375g", "Mount": "Canon RF-S"},
+        "badge": None,
+        "in_stock": True,
+    },
+    {
+        "slug": "watch-001",
+        "name": "Apple Watch Series 9",
+        "brand": "Apple",
+        "category_slug": "smartwatches",
+        "price": 41900,
+        "original_price": None,
+        "rating": 4.8,
+        "reviews_count": 4890,
+        "image_url": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=500&q=80",
+        "description": "Apple Watch Series 9 features the new S9 chip with on-device Siri, Double Tap gesture.",
+        "short_description": "Apple's smartest watch with S9 chip, Double Tap gesture and 2000-nit display.",
+        "features": ["S9 chip with on-device Siri", "Double Tap gesture control", "2000-nit always-on display", "Blood Oxygen + ECG sensors", "Crash Detection & Fall Detection", "18-hour battery, fast charging"],
+        "specs": {"Chip": "Apple S9", "Display": "45mm Always-On Retina LTPO", "Peak Brightness": "2000 nits", "Battery": "18 hours (up to 36 hrs Low Power)", "Sensors": "ECG, Blood Oxygen, Temperature", "Water Resistance": "50M", "Connectivity": "GPS + optional LTE", "OS": "watchOS 10"},
+        "badge": "Best Seller",
+        "in_stock": True,
+    },
+    {
+        "slug": "speaker-001",
+        "name": "JBL Flip 6",
+        "brand": "JBL",
+        "category_slug": "speakers",
+        "price": 8999,
+        "original_price": 11999,
+        "rating": 4.4,
+        "reviews_count": 8730,
+        "image_url": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80",
+        "description": "The JBL Flip 6 delivers powerful stereo sound with separate tweeters and two JBL bass radiators.",
+        "short_description": "Waterproof portable speaker with 12-hour battery and powerful bass.",
+        "features": ["IP67 waterproof and dustproof", "12-hour battery life", "JBL PartyBoost multi-speaker pairing", "Dedicated tweeter for crisp highs", "USB-C charging", "Bold JBL Original Pro Sound"],
+        "specs": {"Output": "30W (2× tweeter + 2× passive bass)", "Battery": "12 hours", "Water Rating": "IP67", "Bluetooth": "5.1", "Charging": "USB-C", "Frequency": "63Hz–20kHz", "Weight": "550g", "Dimensions": "178 × 68 × 72mm"},
+        "badge": "Deal",
+        "in_stock": True,
+    },
+    {
+        "slug": "accessory-001",
+        "name": "Logitech MX Master 3S",
+        "brand": "Logitech",
+        "category_slug": "accessories",
+        "price": 8995,
+        "original_price": None,
+        "rating": 4.7,
+        "reviews_count": 3210,
+        "image_url": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=500&q=80",
+        "description": "The MX Master 3S is Logitech's flagship productivity mouse with an 8K DPI sensor.",
+        "short_description": "Premium ergonomic mouse with 8K DPI sensor and ultra-fast MagSpeed scroll.",
+        "features": ["8000 DPI Darkfield sensor (glass surfaces)", "MagSpeed electromagnetic scroll wheel", "Virtually silent clicks", "Multi-device: connects up to 3 devices", "70-day battery on single charge", "Logi Options+ software"],
+        "specs": {"Sensor": "8000 DPI Darkfield", "Buttons": "7 (all programmable)", "Scroll": "MagSpeed electromagnetic", "Battery": "70 days (USB-C rechargeable)", "Connectivity": "Bluetooth / USB Receiver", "Compatibility": "Windows, macOS, Linux, iPadOS", "Weight": "141g", "Dimensions": "124.9 × 84.3 × 51mm"},
+        "badge": None,
+        "in_stock": True,
+    },
+    {
+        "slug": "accessory-002",
+        "name": "Keychron K2 Pro",
+        "brand": "Keychron",
+        "category_slug": "accessories",
+        "price": 9500,
+        "original_price": None,
+        "rating": 4.6,
+        "reviews_count": 1540,
+        "image_url": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&q=80",
+        "description": "The Keychron K2 Pro is a compact 75% hot-swappable mechanical keyboard with QMK/VIA support.",
+        "short_description": "Compact 75% hot-swap mechanical keyboard with QMK support and RGB lighting.",
+        "features": ["Hot-swappable switches", "QMK/VIA customizable firmware", "Bluetooth 5.1 (up to 3 devices) + USB-C", "South-facing RGB backlight", "Aluminum top frame", "Mac and Windows compatible"],
+        "specs": {"Layout": "75% (84 keys)", "Switches": "Gateron G Pro 3.0 (Red/Brown/Blue)", "Hotswap": "Yes (5-pin)", "Bluetooth": "5.1 (3 devices)", "Backlight": "South-facing RGB", "Battery": "4000mAh", "Frame": "Aluminum + ABS", "Firmware": "QMK / VIA"},
+        "badge": "New",
+        "in_stock": True,
+    },
+]
+
+
+def seed_database(db: Session) -> None:
+    """Seed categories and products if they don't exist."""
+    if db.query(Category).count() > 0:
+        return  # Already seeded
+
+    print("[Seeder] Seeding categories...")
+    cat_map = {}
+    for c in CATEGORIES:
+        cat = Category(**c)
+        db.add(cat)
+        db.flush()
+        cat_map[c["slug"]] = cat.id
+
+    print("[Seeder] Seeding products...")
+    for p in PRODUCTS:
+        cat_slug = p.pop("category_slug")
+        prod = Product(**p, category_id=cat_map[cat_slug])
+        db.add(prod)
+
+    db.commit()
+    print(f"[Seeder] Done — seeded {len(CATEGORIES)} categories and {len(PRODUCTS)} products.")

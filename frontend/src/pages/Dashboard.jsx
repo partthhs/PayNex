@@ -1,18 +1,21 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   MessageSquare, ShoppingBag, GitCompare, ShoppingCart,
-  Search, Heart, Eye, ArrowRight
+  Search, Heart, Eye, ArrowRight, Package
 } from 'lucide-react'
 import { PRODUCTS } from '../data/products'
-import { DASHBOARD_STATS, RECENT_ACTIVITY, QUICK_ACTIONS } from '../data/sampleData'
+import { DASHBOARD_STATS as FALLBACK_STATS, RECENT_ACTIVITY as FALLBACK_ACTIVITY, QUICK_ACTIONS } from '../data/sampleData'
+import { useAuth } from '../context/AuthContext'
+import { dashboardService } from '../services/aiService'
 import StatCard from '../components/ui/StatCard'
 import ProductCard from '../components/products/ProductCard'
 import PageHeader from '../components/ui/PageHeader'
 import Button from '../components/ui/Button'
 
 const ACTION_ICONS = { MessageSquare, ShoppingBag, GitCompare, ShoppingCart }
-const ACTIVITY_ICONS = { Search, Heart, Eye, GitCompare, MessageSquare }
+const ACTIVITY_ICONS = { Search, Heart, Eye, GitCompare, MessageSquare, order: Package, cart: ShoppingCart, wishlist: Heart }
 
 const ACTION_BG = {
   blue:    'bg-blue-50 text-blue-600',
@@ -23,17 +26,51 @@ const ACTION_BG = {
 
 export default function Dashboard() {
   const navigate = useNavigate()
+  const { user, isAuthenticated } = useAuth()
+  const [stats, setStats] = useState(FALLBACK_STATS)
+  const [activity, setActivity] = useState(FALLBACK_ACTIVITY)
+
+  useEffect(() => {
+    async function loadStats() {
+      if (isAuthenticated) {
+        try {
+          const data = await dashboardService.getStats()
+          setStats([
+            { id: 1, title: 'AI Sessions', value: String(data.ai_sessions || 0), iconName: 'MessageSquare', trend: 'up', change: 'Active conversations' },
+            { id: 2, title: 'Saved Products', value: String(data.wishlist_count || 0), iconName: 'Heart', trend: 'up', change: 'In your wishlist' },
+            { id: 3, title: 'Orders Placed', value: String(data.order_count || 0), iconName: 'ShoppingBag', trend: 'neutral', change: 'Verified purchases' },
+            { id: 4, title: 'Cart Items', value: String(data.cart_count || 0), iconName: 'ShoppingCart', trend: 'up', change: 'Awaiting checkout' },
+          ])
+
+          if (data.recent_activity?.length > 0) {
+            setActivity(data.recent_activity.map(a => ({
+              id: a.id,
+              type: a.action_type,
+              text: a.description,
+              time: new Date(a.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              iconName: a.action_type,
+            })))
+          }
+        } catch (err) {
+          console.warn('Could not fetch real dashboard stats:', err)
+        }
+      }
+    }
+    loadStats()
+  }, [isAuthenticated])
+
+  const greeting = user?.full_name ? `Welcome back, ${user.full_name} 👋` : 'Good morning, Shopper 👋'
 
   return (
     <div>
       <PageHeader
-        title="Good morning, Shopper 👋"
-        description="Here's your shopping overview for today."
+        title={greeting}
+        description="Here's your live shopping overview and real-time activity."
       />
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
-        {DASHBOARD_STATS.map((stat, i) => (
+        {stats.map((stat, i) => (
           <motion.div
             key={stat.id}
             initial={{ opacity: 0, y: 16 }}
@@ -109,8 +146,8 @@ export default function Dashboard() {
             <div>
               <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Recent Activity</h2>
               <div className="space-y-2.5">
-                {RECENT_ACTIVITY.map(item => {
-                  const Icon = ACTIVITY_ICONS[item.iconName] || Search
+                {activity.map(item => {
+                  const Icon = ACTIVITY_ICONS[item.iconName] || ACTIVITY_ICONS[item.type] || Search
                   return (
                     <div key={item.id} className="flex items-start gap-2.5 py-1">
                       <div className="w-6 h-6 rounded-md bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
@@ -131,7 +168,7 @@ export default function Dashboard() {
 
       {/* Disclaimer */}
       <p className="text-[11px] text-slate-400 text-center">
-        Dashboard demonstrates shopping sessions and activity tracking.
+        Live PostgreSQL session and activity tracking connected.
       </p>
     </div>
   )

@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, ShoppingCart, Bell, Search } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
+import { useAuth } from '../../context/AuthContext'
 
 const PAGE_TITLES = {
   '/dashboard': 'Dashboard',
@@ -16,8 +17,10 @@ const PAGE_TITLES = {
 export default function TopNav({ onMenuToggle }) {
   const { pathname } = useLocation()
   const { cartCount } = useCart()
+  const { user } = useAuth()
 
   const title = Object.entries(PAGE_TITLES).find(([k]) => pathname.startsWith(k))?.[1] ?? 'PayNex'
+  const initial = (user?.full_name || 'U').charAt(0).toUpperCase()
 
   return (
     <header className="fixed top-0 left-0 lg:left-64 right-0 h-16 bg-white border-b border-slate-200 z-30 flex items-center px-4 sm:px-6 gap-4">
@@ -69,7 +72,7 @@ export default function TopNav({ onMenuToggle }) {
           className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center ml-1 hover:ring-2 hover:ring-blue-300 transition shrink-0 cursor-pointer"
           aria-label="Profile"
         >
-          <span className="text-white text-xs font-bold">U</span>
+          <span className="text-white text-xs font-bold">{initial}</span>
         </Link>
       </div>
     </header>

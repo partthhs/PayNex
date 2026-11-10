@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Zap, Check, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, Zap, Check, ArrowRight, Loader2 } from 'lucide-react'
 import Button from '../components/ui/Button'
+import { useAuth } from '../context/AuthContext'
 
 const WHY = [
   'AI-powered product discovery',
@@ -11,10 +12,12 @@ const WHY = [
 
 export default function Login() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const [form,   setForm]   = useState({ email: '', password: '', remember: false })
   const [errors, setErrors] = useState({})
   const [showPw, setShowPw] = useState(false)
   const [notice, setNotice] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const validate = () => {
     const e = {}
@@ -23,12 +26,23 @@ export default function Login() {
     return e
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
     setErrors({})
-    setNotice('Authentication will be integrated in Phase 3.')
+    setNotice('')
+    setLoading(true)
+
+    try {
+      await login({ email: form.email, password: form.password })
+      navigate('/dashboard')
+    } catch (err) {
+      const msg = err.response?.data?.detail || 'Login failed. Please check your credentials.'
+      setNotice(msg)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -77,7 +91,7 @@ export default function Login() {
           <p className="text-sm text-slate-500 mb-7">Sign in to your PayNex account</p>
 
           {notice && (
-            <div className="mb-5 p-3 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-700">
+            <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
               {notice}
             </div>
           )}
@@ -134,8 +148,17 @@ export default function Login() {
               <button type="button" className="text-sm text-blue-600 hover:underline">Forgot password?</button>
             </div>
 
-            <Button type="submit" variant="primary" size="lg" fullWidth>
-              Sign In <ArrowRight size={16} />
+            <Button type="submit" variant="primary" size="lg" fullWidth disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span>Signing In...</span>
+                </>
+              ) : (
+                <>
+                  Sign In <ArrowRight size={16} />
+                </>
+              )}
             </Button>
           </form>
 

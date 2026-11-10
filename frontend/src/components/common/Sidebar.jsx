@@ -1,7 +1,8 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { X, Zap, LayoutDashboard, MessageSquare, ShoppingBag, GitCompare, ShoppingCart, Package, User, LogOut } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
 import { useCompare } from '../../context/CompareContext'
+import { useAuth } from '../../context/AuthContext'
 
 const NAV = [
   { label: 'Dashboard',       to: '/dashboard', Icon: LayoutDashboard },
@@ -14,7 +15,15 @@ const NAV = [
 ]
 
 function SidebarContent({ onClose, pathname, cartCount, compareCount }) {
+  const navigate = useNavigate()
+  const { logout, user } = useAuth()
   const isActive = (to) => pathname === to || pathname.startsWith(to + '/')
+
+  const handleSignOut = () => {
+    logout()
+    onClose?.()
+    navigate('/login')
+  }
 
   return (
     <div className="flex flex-col h-full bg-[#172554]">
@@ -65,12 +74,15 @@ function SidebarContent({ onClose, pathname, cartCount, compareCount }) {
       {/* Bottom */}
       <div className="px-3 pb-5 shrink-0">
         <div className="mb-3 px-3 py-2 rounded-lg bg-white/5 text-center">
-          <p className="text-xs text-slate-400">Phase 2 Demo</p>
-          <p className="text-xs text-slate-500">UI/UX Preview</p>
+          <p className="text-xs text-blue-300 font-semibold">{user ? user.full_name : 'Guest Session'}</p>
+          <p className="text-[11px] text-slate-400">FastAPI + PostgreSQL</p>
         </div>
-        <button className="h-10 flex items-center gap-3 px-3 w-full rounded-lg text-sm text-slate-400 hover:bg-white/10 hover:text-white transition-colors">
+        <button
+          onClick={handleSignOut}
+          className="h-10 flex items-center gap-3 px-3 w-full rounded-lg text-sm text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+        >
           <LogOut size={18} />
-          <span>Sign Out</span>
+          <span>{user ? 'Sign Out' : 'Sign In'}</span>
         </button>
       </div>
     </div>

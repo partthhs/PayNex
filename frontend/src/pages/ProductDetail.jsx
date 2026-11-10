@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ShoppingCart, GitCompare, ArrowLeft, Check, Minus, Plus } from 'lucide-react'
 import { getProductById, getSimilarProducts } from '../data/products'
+import { productService } from '../services/productService'
 import { useCart } from '../context/CartContext'
 import { useCompare } from '../context/CompareContext'
 import PriceDisplay from '../components/ui/PriceDisplay'
@@ -18,7 +19,21 @@ function imgFallback(e) {
 export default function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const product  = getProductById(id)
+  const [product, setProduct] = useState(() => getProductById(id))
+
+  useEffect(() => {
+    async function fetchDetail() {
+      try {
+        const p = await productService.getProductBySlug(id)
+        if (p) setProduct(p)
+      } catch {
+        // Keep local fallback
+        const local = getProductById(id)
+        if (local) setProduct(local)
+      }
+    }
+    fetchDetail()
+  }, [id])
 
   const { addToCart, cartItems }              = useCart()
   const { addToCompare, isInCompare, compareItems } = useCompare()

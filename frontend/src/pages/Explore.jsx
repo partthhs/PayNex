@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { SlidersHorizontal, X } from 'lucide-react'
-import { PRODUCTS, getUniqueBrands } from '../data/products'
+import { PRODUCTS as LOCAL_PRODUCTS } from '../data/products'
 import { CATEGORIES } from '../constants'
+import { productService } from '../services/productService'
 import SearchBar from '../components/ui/SearchBar'
 import FilterPanel from '../components/products/FilterPanel'
 import ProductCard from '../components/products/ProductCard'
@@ -10,6 +11,7 @@ import PageHeader from '../components/ui/PageHeader'
 import Button from '../components/ui/Button'
 
 export default function Explore() {
+  const [products,       setProducts]       = useState(LOCAL_PRODUCTS)
   const [query,          setQuery]          = useState('')
   const [category,       setCategory]       = useState('all')
   const [priceRange,     setPriceRange]     = useState([0, 200000])
@@ -18,7 +20,24 @@ export default function Explore() {
   const [selectedBrands, setSelectedBrands] = useState([])
   const [filtersOpen,    setFiltersOpen]    = useState(false)
 
-  const brands = getUniqueBrands()
+  // Fetch real product catalog from backend API
+  useEffect(() => {
+    async function loadCatalog() {
+      try {
+        const data = await productService.getProducts({ page_size: 50 })
+        if (data.items?.length > 0) {
+          setProducts(data.items)
+        }
+      } catch (err) {
+        console.warn('Backend API unavailable, using local catalog:', err)
+      }
+    }
+    loadCatalog()
+  }, [])
+
+  const brands = useMemo(() => {
+    return [...new Set(products.map(p => p.brand))].sort()
+  }, [products])
 
   const toggleBrand = (brand) => {
     setSelectedBrands(prev =>
@@ -32,7 +51,7 @@ export default function Explore() {
   }
 
   const filtered = useMemo(() => {
-    let list = [...PRODUCTS]
+    let list = [...products]
 
     if (category !== 'all') list = list.filter(p => p.category === category)
     if (query.trim()) {
@@ -40,7 +59,7 @@ export default function Explore() {
       list = list.filter(p =>
         p.name.toLowerCase().includes(q) ||
         p.brand.toLowerCase().includes(q) ||
-        p.shortDescription.toLowerCase().includes(q)
+        (p.shortDescription && p.shortDescription.toLowerCase().includes(q))
       )
     }
     list = list.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1])
@@ -54,7 +73,7 @@ export default function Explore() {
       default: break
     }
     return list
-  }, [query, category, priceRange, selectedRating, sortBy, selectedBrands])
+  }, [products, query, category, priceRange, selectedRating, sortBy, selectedBrands])
 
   const catLabel = CATEGORIES.find(c => c.id === category)?.label || 'All Products'
 

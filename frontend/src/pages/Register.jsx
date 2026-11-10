@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Zap, Check, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, Zap, Check, ArrowRight, Loader2 } from 'lucide-react'
 import Button from '../components/ui/Button'
+import { useAuth } from '../context/AuthContext'
 
 const WHY = [
   'Discover products with natural language',
@@ -47,6 +48,7 @@ function PwToggle({ show, setShow }) {
 
 export default function Register() {
   const navigate = useNavigate()
+  const { register } = useAuth()
   const [form, setForm] = useState({
     name: '', email: '', password: '', confirm: '', terms: false,
   })
@@ -54,6 +56,7 @@ export default function Register() {
   const [showPw, setShowPw]  = useState(false)
   const [showCp, setShowCp]  = useState(false)
   const [notice, setNotice]  = useState('')
+  const [loading, setLoading] = useState(false)
 
   const validate = () => {
     const e = {}
@@ -65,12 +68,23 @@ export default function Register() {
     return e
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
     setErrors({})
-    setNotice('Account creation will be integrated in Phase 3.')
+    setNotice('')
+    setLoading(true)
+
+    try {
+      await register({ full_name: form.name, email: form.email, password: form.password })
+      navigate('/dashboard')
+    } catch (err) {
+      const msg = err.response?.data?.detail || 'Account registration failed. Please try again.'
+      setNotice(msg)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const set = (field) => (e) =>
@@ -119,7 +133,7 @@ export default function Register() {
           <p className="text-sm text-slate-500 mb-7">Start shopping smarter with PayNex</p>
 
           {notice && (
-            <div className="mb-5 p-3 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-700">
+            <div className="mb-5 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
               {notice}
             </div>
           )}
@@ -173,8 +187,17 @@ export default function Register() {
               {errors.terms && <p className="text-xs text-red-500 mt-1">{errors.terms}</p>}
             </div>
 
-            <Button type="submit" variant="primary" size="lg" fullWidth>
-              Create Account <ArrowRight size={16} />
+            <Button type="submit" variant="primary" size="lg" fullWidth disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  <span>Creating Account...</span>
+                </>
+              ) : (
+                <>
+                  Create Account <ArrowRight size={16} />
+                </>
+              )}
             </Button>
           </form>
 
