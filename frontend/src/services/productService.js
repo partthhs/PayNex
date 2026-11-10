@@ -10,6 +10,8 @@ export function normalizeProduct(p) {
     originalPrice: p.original_price !== undefined ? p.original_price : p.originalPrice,
     reviews: p.reviews_count !== undefined ? p.reviews_count : p.reviews,
     category: p.category?.slug || p.category,
+    shortDescription: p.short_description || p.shortDescription,
+    inStock: p.in_stock !== undefined ? Boolean(p.in_stock) : (p.inStock !== undefined ? Boolean(p.inStock) : true),
   }
 }
 

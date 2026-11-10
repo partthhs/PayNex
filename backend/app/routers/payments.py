@@ -51,7 +51,7 @@ async def create_payment(
         result = await create_paypal_order(
             amount_inr=order.total,
             order_ref=str(order.id),
-            return_url=f"{FRONTEND_URL}/orders/{order.id}?paypal_success=1",
+            return_url=f"{FRONTEND_URL}/orders?paypal_success=1&order_id={order.id}",
             cancel_url=f"{FRONTEND_URL}/checkout?paypal_cancelled=1",
         )
     except Exception as e:

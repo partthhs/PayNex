@@ -24,7 +24,7 @@ export default function Explore() {
   useEffect(() => {
     async function loadCatalog() {
       try {
-        const data = await productService.getProducts({ page_size: 50 })
+        const data = await productService.getProducts({ page_size: 100 })
         if (data.items?.length > 0) {
           setProducts(data.items)
         }

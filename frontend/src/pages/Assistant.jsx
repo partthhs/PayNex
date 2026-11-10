@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Send, Zap, Info, X, Trash2, GitCompare, DollarSign, SlidersHorizontal, ShoppingCart, Eye } from 'lucide-react'
-import { PRODUCTS, searchProducts } from '../data/products'
+import {
+  Send, Zap, Info, X, Trash2, GitCompare, DollarSign,
+  SlidersHorizontal, ShoppingCart, Eye, Star, Check
+} from 'lucide-react'
+import { PRODUCTS } from '../data/products'
 import { SUGGESTED_PROMPTS } from '../data/sampleData'
 import { useCompare } from '../context/CompareContext'
 import { useCart } from '../context/CartContext'
@@ -22,6 +25,54 @@ function TypingDots() {
           style={{ animationDelay: `${i * 150}ms` }}
         />
       ))}
+    </div>
+  )
+}
+
+function FormattedLine({ line, isUser }) {
+  const parts = line.split(/(\*\*.*?\*\*)/g)
+  return parts.map((part, idx) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={idx} className={isUser ? "font-bold text-white" : "font-bold text-slate-900"}>
+          {part.slice(2, -2)}
+        </strong>
+      )
+    }
+    return part
+  })
+}
+
+function FormattedMessage({ text, isUser }) {
+  if (!text) return null
+  const paragraphs = text.split(/\n\n+/)
+  return (
+    <div className="space-y-2 text-xs sm:text-sm leading-relaxed">
+      {paragraphs.map((para, pIdx) => {
+        const lines = para.split('\n')
+        const isList = lines.length > 0 && lines.every(l => /^\s*[-*•]\s+/.test(l))
+        if (isList) {
+          return (
+            <ul key={pIdx} className="list-disc pl-5 space-y-1.5 my-1.5">
+              {lines.map((l, lIdx) => (
+                <li key={lIdx}>
+                  <FormattedLine line={l.replace(/^\s*[-*•]\s+/, '')} isUser={isUser} />
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        return (
+          <p key={pIdx}>
+            {lines.map((line, lIdx) => (
+              <span key={lIdx}>
+                {lIdx > 0 && <br />}
+                <FormattedLine line={line} isUser={isUser} />
+              </span>
+            ))}
+          </p>
+        )
+      })}
     </div>
   )
 }
@@ -118,28 +169,51 @@ export default function Assistant() {
   const [budget, setBudget] = useState('')
   const [prefs, setPrefs] = useState({ trusted: false, value: false, newer: false })
   const [panelOpen, setPanelOpen] = useState(false)
+  const [addedIds, setAddedIds] = useState([])
   const bottomRef = useRef(null)
 
-  const { compareItems, removeFromCompare } = useCompare()
+  const { compareItems, addToCompare, removeFromCompare, isInCompare } = useCompare()
   const { addToCart } = useCart()
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, typing])
 
+  const handleAddToCart = (product) => {
+    addToCart(product)
+    setAddedIds(prev => [...prev, product.id])
+    setTimeout(() => {
+      setAddedIds(prev => prev.filter(id => id !== product.id))
+    }, 2000)
+  }
+
   const findProducts = (query) => {
     const q = query.toLowerCase()
-    const budgetMatch = q.match(/[₹]?\s*(\d[\d,]*)\s*k?/)
-    let maxPrice = budget ? parseInt(budget.replace(/,/g, ''), 10) : Infinity
-    if (budgetMatch) {
-      let val = parseInt(budgetMatch[1].replace(/,/g, ''), 10)
-      if (q.includes('k')) val *= 1000
-      if (val > 1000) maxPrice = val
+    let maxPrice = budget ? parseFloat(budget) : Infinity
+    const bMatch = q.match(/(?:under|below|budget|within|max|less than|up to)\s*(?:₹|rs\.?|inr)?\s*([0-9]+(?:,[0-9]+)*)\s*(k|thousand|lakh|lac)?/i)
+    if (bMatch) {
+      let val = parseFloat(bMatch[1].replace(/,/g, ''))
+      const unit = (bMatch[2] || '').toLowerCase()
+      if (unit === 'k' || unit === 'thousand') val *= 1000
+      else if (unit === 'lakh' || unit === 'lac') val *= 100000
+      if (val > 0) maxPrice = val
     }
 
-    let results = searchProducts(query)
-    if (maxPrice !== Infinity) results = results.filter(p => p.price <= maxPrice)
-    return results.slice(0, 3)
+    let cat = null
+    if (/\b(laptop|laptops|notebook|notebooks|macbook|pc|computer)\b/.test(q)) cat = 'laptops'
+    else if (/\b(phone|phones|smartphone|smartphones|mobile|mobiles|iphone|android)\b/.test(q)) cat = 'smartphones'
+    else if (/\b(headphone|headphones|earphone|earphones|earbuds|airpods|audio)\b/.test(q)) cat = 'headphones'
+    else if (/\b(tablet|tablets|ipad)\b/.test(q)) cat = 'tablets'
+    else if (/\b(camera|cameras|dslr|vlog)\b/.test(q)) cat = 'cameras'
+    else if (/\b(watch|watches|smartwatch|smartwatches)\b/.test(q)) cat = 'smartwatches'
+    else if (/\b(speaker|speakers)\b/.test(q)) cat = 'speakers'
+    else if (/\b(mouse|keyboard|charger|accessories|ssd)\b/.test(q)) cat = 'accessories'
+
+    return PRODUCTS.filter(p => {
+      if (cat && p.category !== cat) return false
+      if (maxPrice !== Infinity && p.price > maxPrice) return false
+      return true
+    }).slice(0, 3)
   }
 
   const [conversationId, setConversationId] = useState(null)
@@ -151,10 +225,23 @@ export default function Assistant() {
     setInput('')
     setTyping(true)
 
+    // Extract budget from input text if not set in sidebar
+    let effectiveBudget = budget ? parseFloat(budget) : null
+    if (!effectiveBudget) {
+      const bMatch = text.match(/(?:under|below|budget|within|max|less than|up to)\s*(?:₹|rs\.?|inr)?\s*([0-9]+(?:,[0-9]+)*)\s*(k|thousand|lakh|lac)?/i)
+      if (bMatch) {
+        let val = parseFloat(bMatch[1].replace(/,/g, ''))
+        const unit = (bMatch[2] || '').toLowerCase()
+        if (unit === 'k' || unit === 'thousand') val *= 1000
+        else if (unit === 'lakh' || unit === 'lac') val *= 100000
+        if (val > 0) effectiveBudget = val
+      }
+    }
+
     try {
       const res = await aiService.chat({
         message: text,
-        budget: budget ? parseFloat(budget) : null,
+        budget: effectiveBudget,
         conversationId,
       })
       if (res.conversation_id) setConversationId(res.conversation_id)
@@ -162,8 +249,12 @@ export default function Assistant() {
       const normalizedProducts = (res.products || []).map(p => ({
         ...p,
         id: p.slug || String(p.id),
+        numericId: p.id,
         image: p.image_url || p.image,
         originalPrice: p.original_price ?? p.originalPrice,
+        reviews: p.reviews_count ?? p.reviews ?? 1000,
+        shortDescription: p.short_description || p.shortDescription,
+        inStock: p.in_stock !== undefined ? Boolean(p.in_stock) : (p.inStock !== undefined ? Boolean(p.inStock) : true),
       }))
 
       const aiMsg = {
@@ -171,20 +262,20 @@ export default function Assistant() {
         role: 'ai',
         text: res.message,
         products: normalizedProducts,
-        note: res.note || 'AI evaluated from verified product catalog.',
+        note: res.note || 'AI evaluated against verified PayNex product catalog.',
       }
       setMessages(m => [...m, aiMsg])
     } catch {
       // Graceful local fallback if offline or backend error
-      const products = findProducts(text)
+      const matchingProducts = findProducts(text)
       const aiMsg = {
         id: newId(),
         role: 'ai',
-        text: products.length
-          ? `Found ${products.length} matching product${products.length > 1 ? 's' : ''} based on your specifications:`
-          : `No exact specification matches found within that filter. Here are recommended alternatives:`,
-        products: products.length ? products : PRODUCTS.slice(0, 3),
-        note: 'Recommendations evaluated from local catalog.',
+        text: matchingProducts.length
+          ? `Found **${matchingProducts.length} matching product${matchingProducts.length > 1 ? 's' : ''}** within your budget criteria:`
+          : `No products in our catalog match your budget ceiling and category criteria. Please consider adjusting your target budget.`,
+        products: matchingProducts,
+        note: 'Evaluated strictly against verified catalog and budget.',
       }
       setMessages(m => [...m, aiMsg])
     } finally {
@@ -201,13 +292,13 @@ export default function Assistant() {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 bg-slate-50/50 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm">
               <Zap size={16} className="text-white" />
             </div>
             <div>
               <p className="text-sm font-bold text-slate-900">AI Shopping Assistant</p>
               <p className="text-[11px] text-green-600 flex items-center gap-1 font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse" />
                 Active Session
               </p>
             </div>
@@ -244,20 +335,20 @@ export default function Assistant() {
         {/* Message feed */}
         <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-5">
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full text-center py-8 max-w-lg mx-auto">
-              <div className="w-12 h-12 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-center mb-4 text-blue-600">
+            <div className="flex flex-col items-center justify-center h-full text-center py-8 max-w-xl mx-auto">
+              <div className="w-12 h-12 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-center mb-4 text-blue-600 shadow-sm">
                 <Zap size={24} />
               </div>
               <h3 className="text-base font-bold text-slate-900 mb-1.5">What are you looking to buy?</h3>
-              <p className="text-xs text-slate-500 mb-6 leading-relaxed max-w-sm">
-                Describe your specifications, target price, or preferred category to receive matched recommendations.
+              <p className="text-xs text-slate-500 mb-6 leading-relaxed max-w-md">
+                Describe your target price, requirements, or compare items. I evaluate verified specifications and enforce strict budgets.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full text-left">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full text-left">
                 {SUGGESTED_PROMPTS.map(prompt => (
                   <button
                     key={prompt}
                     onClick={() => send(prompt)}
-                    className="text-xs text-slate-700 bg-slate-50 hover:bg-blue-50 hover:text-blue-700 border border-slate-200 hover:border-blue-200 rounded-xl p-3 transition-colors text-left"
+                    className="text-xs text-slate-700 bg-slate-50 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 border border-slate-200 rounded-xl p-3 transition-all text-left shadow-2xs hover:shadow-sm"
                   >
                     "{prompt}"
                   </button>
@@ -276,53 +367,114 @@ export default function Assistant() {
                   <span className="text-[10px] font-bold text-blue-700">AI</span>
                 </div>
               )}
-              <div className={`max-w-[95%] sm:max-w-[85%] ${msg.products ? 'w-full sm:max-w-2xl lg:max-w-3xl' : ''} space-y-3 ${msg.role === 'user' ? 'items-end' : ''}`}>
+              <div className={`max-w-[95%] sm:max-w-[85%] ${msg.products?.length > 0 ? 'w-full sm:max-w-2xl lg:max-w-3xl' : ''} space-y-3 ${msg.role === 'user' ? 'items-end' : ''}`}>
                 <div className={[
-                  'px-4 py-2.5 text-xs sm:text-sm leading-relaxed rounded-2xl',
+                  'px-4 py-3 rounded-2xl shadow-2xs',
                   msg.role === 'user'
                     ? 'bg-blue-600 text-white rounded-br-sm'
                     : 'bg-slate-50 border border-slate-200 text-slate-800 rounded-bl-sm',
                 ].join(' ')}>
-                  {msg.text}
+                  <FormattedMessage text={msg.text} isUser={msg.role === 'user'} />
                 </div>
 
-                {/* Compact product recommendations */}
-                {msg.products && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
-                    {msg.products.map(p => (
-                      <div
-                        key={p.id}
-                        className="bg-white border border-slate-200 rounded-xl p-3 flex flex-col justify-between shadow-sm"
-                      >
-                        <div className="flex gap-2.5 items-start mb-2">
-                          <img
-                            src={p.image}
-                            alt={p.name}
-                            className="w-12 h-12 rounded-lg object-cover bg-slate-50 shrink-0"
-                          />
-                          <div className="min-w-0 flex-1">
-                            <span className="text-[10px] uppercase font-semibold text-slate-400 block">{p.brand}</span>
-                            <p className="text-xs font-bold text-slate-900 truncate">{p.name}</p>
-                            <PriceDisplay price={p.price} originalPrice={p.originalPrice} size="sm" />
+                {/* Rich Product Recommendations Cards */}
+                {msg.products && msg.products.length > 0 && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 w-full pt-1">
+                    {msg.products.map(p => {
+                      const inComp = isInCompare(p.id)
+                      const isJustAdded = addedIds.includes(p.id)
+
+                      return (
+                        <div
+                          key={p.id}
+                          className="bg-white border border-slate-200 hover:border-blue-300 rounded-xl p-3.5 flex flex-col justify-between shadow-xs hover:shadow-md transition-all group"
+                        >
+                          <div>
+                            {/* Image & Badge */}
+                            <div className="relative mb-2.5">
+                              <img
+                                src={p.image}
+                                alt={p.name}
+                                className="w-full h-32 rounded-lg object-cover bg-slate-50"
+                              />
+                              {p.badge && (
+                                <span className="absolute top-2 left-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs">
+                                  {p.badge}
+                                </span>
+                              )}
+                              <span className="absolute bottom-2 right-2 flex items-center gap-1 bg-white/95 backdrop-blur-xs text-[10px] font-semibold text-slate-700 px-2 py-0.5 rounded-md shadow-2xs border border-slate-200/50">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                                In Stock
+                              </span>
+                            </div>
+
+                            {/* Details */}
+                            <div className="min-w-0">
+                              <div className="flex items-center justify-between mb-0.5">
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">{p.brand}</span>
+                                {p.rating && (
+                                  <span className="flex items-center gap-1 text-[11px] font-semibold text-amber-600">
+                                    <Star size={11} className="fill-amber-400 text-amber-400" />
+                                    {p.rating}
+                                    <span className="text-slate-400 font-normal">({p.reviews || p.reviews_count || 120})</span>
+                                  </span>
+                                )}
+                              </div>
+                              <h4 className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1 mb-1">
+                                {p.name}
+                              </h4>
+                              {p.shortDescription && (
+                                <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed mb-2">
+                                  {p.shortDescription}
+                                </p>
+                              )}
+                              <PriceDisplay price={p.price} originalPrice={p.originalPrice} size="sm" />
+                            </div>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="space-y-1.5 pt-3 border-t border-slate-100 mt-2">
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                onClick={() => handleAddToCart(p)}
+                                className={`flex-1 h-7 text-[11px] font-semibold rounded-lg flex items-center justify-center gap-1 transition-colors ${
+                                  isJustAdded
+                                    ? 'bg-emerald-600 text-white'
+                                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                                }`}
+                              >
+                                {isJustAdded ? (
+                                  <>
+                                    <Check size={12} /> Added!
+                                  </>
+                                ) : (
+                                  <>
+                                    <ShoppingCart size={12} /> Add to Cart
+                                  </>
+                                )}
+                              </button>
+                              <Link
+                                to={`/product/${p.slug || p.id}`}
+                                className="h-7 px-2.5 text-[11px] font-medium border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-1 transition-colors"
+                              >
+                                <Eye size={12} /> View
+                              </Link>
+                            </div>
+                            <button
+                              onClick={() => inComp ? removeFromCompare(p.id) : addToCompare(p)}
+                              className={`w-full h-6 text-[10px] font-medium rounded-md border flex items-center justify-center gap-1 transition-colors ${
+                                inComp
+                                  ? 'bg-blue-50 border-blue-200 text-blue-700'
+                                  : 'border-slate-200 text-slate-500 hover:bg-slate-50'
+                              }`}
+                            >
+                              <GitCompare size={11} />
+                              {inComp ? 'In Compare Queue' : '+ Add to Compare'}
+                            </button>
                           </div>
                         </div>
-
-                        <div className="flex items-center gap-1.5 pt-2 border-t border-slate-200">
-                          <button
-                            onClick={() => addToCart(p)}
-                            className="flex-1 h-7 text-[11px] font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center gap-1 transition-colors"
-                          >
-                            <ShoppingCart size={12} /> Add
-                          </button>
-                          <Link
-                            to={`/product/${p.id}`}
-                            className="h-7 px-2.5 text-[11px] font-medium border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-1 transition-colors"
-                          >
-                            <Eye size={12} /> View
-                          </Link>
-                        </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 )}
 
@@ -354,13 +506,13 @@ export default function Assistant() {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') send() }}
-              placeholder="Type your requirements (e.g. laptop under 70k for coding)..."
+              placeholder="Type your requirements (e.g. wireless headphones under 5000, laptop under 70k)..."
               className="h-10 flex-1 text-xs sm:text-sm border border-slate-200 rounded-lg px-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 placeholder:text-slate-400"
             />
             <button
               onClick={() => send()}
               disabled={!input.trim()}
-              className="w-10 h-10 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 disabled:text-slate-400 text-white rounded-lg flex items-center justify-center transition-colors shrink-0"
+              className="w-10 h-10 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 disabled:text-slate-400 text-white rounded-lg flex items-center justify-center transition-colors shrink-0 shadow-2xs"
               aria-label="Send message"
             >
               <Send size={15} />

@@ -2,7 +2,7 @@
 Pydantic Schemas for PayNex API
 """
 from datetime import datetime
-from typing import Optional, Any
+from typing import Optional, Any, Union
 from pydantic import BaseModel, EmailStr, field_validator
 
 
@@ -146,7 +146,7 @@ class CartResponse(BaseModel):
 
 
 class AddToCartRequest(BaseModel):
-    product_id: int
+    product_id: Union[int, str]
     quantity: int = 1
 
     @field_validator("quantity")
@@ -268,17 +268,22 @@ class ChatProductRef(BaseModel):
     name: str
     brand: str
     price: float
-    original_price: Optional[float]
-    image_url: Optional[str]
-    rating: float
-    badge: Optional[str]
+    original_price: Optional[float] = None
+    image_url: Optional[str] = None
+    rating: float = 4.5
+    reviews_count: Optional[int] = None
+    badge: Optional[str] = None
+    short_description: Optional[str] = None
+    in_stock: bool = True
+    features: Optional[list[str]] = None
+    category: Optional[str] = None
 
 
 class ChatResponse(BaseModel):
-    conversation_id: int
+    conversation_id: Optional[int] = None
     message: str
     products: list[ChatProductRef]
-    note: Optional[str]
+    note: Optional[str] = None
 
 
 # ─────────────────────────── Dashboard ──────────────────────────────────────

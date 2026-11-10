@@ -57,13 +57,17 @@ def add_to_cart(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    product = db.query(Product).filter(Product.id == payload.product_id, Product.in_stock == True).first()
+    if isinstance(payload.product_id, int) or (isinstance(payload.product_id, str) and payload.product_id.isdigit()):
+        product = db.query(Product).filter(Product.id == int(payload.product_id), Product.in_stock == True).first()
+    else:
+        product = db.query(Product).filter(Product.slug == str(payload.product_id), Product.in_stock == True).first()
+
     if not product:
         raise HTTPException(status_code=404, detail="Product not found or out of stock")
 
     existing = db.query(CartItem).filter(
         CartItem.user_id == current_user.id,
-        CartItem.product_id == payload.product_id,
+        CartItem.product_id == product.id,
     ).first()
 
     if existing:

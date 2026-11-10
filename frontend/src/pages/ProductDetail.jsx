@@ -59,6 +59,7 @@ export default function ProductDetail() {
   const inCart    = cartItems.some(i => i.product.id === product.id)
   const inCompare = isInCompare(product.id)
   const similar   = getSimilarProducts(product)
+  const isAvailable = product.inStock !== false && product.in_stock !== false
 
   const handleAddToCart = () => {
     for (let i = 0; i < qty; i++) addToCart(product)
@@ -103,14 +104,14 @@ export default function ProductDetail() {
                   </Badge>
                 </div>
               )}
-              {!product.inStock && (
+              {!isAvailable && (
                 <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
                   <span className="font-semibold text-slate-500 text-xs uppercase tracking-wider">Out of Stock</span>
                 </div>
               )}
             </div>
             {/* In stock pill */}
-            {product.inStock && (
+            {isAvailable && (
               <div className="flex items-center gap-1.5 mt-3 text-xs text-green-700 font-medium">
                 <Check size={14} className="text-green-600" />
                 <span>Verified Available in Catalog</span>
@@ -168,7 +169,7 @@ export default function ProductDetail() {
                 variant="primary"
                 size="md"
                 onClick={handleAddToCart}
-                disabled={!product.inStock}
+                disabled={!isAvailable}
                 className="flex-1"
               >
                 {cartAdded

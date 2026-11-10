@@ -1,13 +1,15 @@
 """AI Assistant router"""
 import json
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import or_, func
 
 from app.database import get_db
 from app.models import User, AIConversation, AIMessage, MessageRole, Product, Category
 from app.schemas import ChatRequest, ChatResponse, ChatProductRef
-from app.utils.auth import get_current_user
-from app.utils.ai import gemini_assistant
+from app.utils.auth import get_optional_current_user, get_current_user
+from app.utils.ai import gemini_assistant, extract_budget, extract_category
 from app.services.activity import log_activity
 
 router = APIRouter(prefix="/ai", tags=["AI Assistant"])
@@ -38,82 +40,107 @@ def _build_catalog_json(db: Session) -> str:
 async def chat(
     payload: ChatRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_optional_current_user),
 ):
-    """Send a message to the AI shopping assistant."""
-    # Get or create conversation
-    if payload.conversation_id:
-        conv = db.query(AIConversation).filter(
-            AIConversation.id == payload.conversation_id,
-            AIConversation.user_id == current_user.id,
-        ).first()
+    """Send a message to the AI shopping assistant (supports both authenticated and guest users)."""
+    effective_budget = payload.budget or extract_budget(payload.message)
+    detected_category = extract_category(payload.message)
+
+    # 1. Conversation tracking (persisted if user is logged in)
+    conv = None
+    history = []
+    if current_user:
+        if payload.conversation_id:
+            conv = db.query(AIConversation).filter(
+                AIConversation.id == payload.conversation_id,
+                AIConversation.user_id == current_user.id,
+            ).first()
         if not conv:
-            raise HTTPException(status_code=404, detail="Conversation not found")
-    else:
-        conv = AIConversation(user_id=current_user.id, title=payload.message[:60])
-        db.add(conv)
-        db.flush()
+            conv = AIConversation(user_id=current_user.id, title=payload.message[:60])
+            db.add(conv)
+            db.flush()
 
-    # Build history from stored messages
-    history = [
-        {"role": msg.role.value, "content": msg.content}
-        for msg in conv.messages
-    ]
+        history = [
+            {"role": msg.role.value, "content": msg.content}
+            for msg in conv.messages
+        ]
 
-    # Build catalog context
+    # 2. Build catalog context
     catalog_json = _build_catalog_json(db)
 
-    # Call Gemini (or fallback)
+    # 3. Call Gemini assistant
     result = await gemini_assistant.chat(
         user_message=payload.message,
         history=history,
         catalog_json=catalog_json,
-        budget=payload.budget,
+        budget=effective_budget,
     )
 
-    # Resolve product slugs to Product DB records
+    # 4. Resolve and STRICTLY filter recommended products
+    candidate_slugs = result.get("product_slugs") or []
     matched_products = []
-    if result.get("product_slugs"):
-        for slug in result["product_slugs"][:6]:  # max 6 recommendations
-            product = db.query(Product).options(
-                joinedload(Product.category)
-            ).filter(Product.slug == slug).first()
-            if product:
-                matched_products.append(product)
 
-    # Fallback: keyword search if Gemini returned no slugs
-    if not matched_products:
-        from sqlalchemy import or_, func
-        q = payload.message.lower()
+    for slug in candidate_slugs[:6]:
+        product = db.query(Product).options(
+            joinedload(Product.category)
+        ).filter(Product.slug == slug).first()
+        if not product:
+            continue
+        # Strict Budget Ceiling Enforcement
+        if effective_budget is not None and product.price > effective_budget:
+            continue
+        # Strict Category Enforcement
+        if detected_category and product.category.slug != detected_category:
+            continue
+        matched_products.append(product)
+
+    # 5. Database fallback if Gemini returned no valid slugs within constraints
+    if not matched_products and (detected_category or effective_budget):
         query = db.query(Product).options(joinedload(Product.category))
-        if payload.budget:
-            query = query.filter(Product.price <= payload.budget)
-        products = query.filter(
-            or_(
-                func.lower(Product.name).like(f"%{q}%"),
-                func.lower(Product.brand).like(f"%{q}%"),
-                func.lower(Product.short_description).like(f"%{q}%"),
+        if detected_category:
+            query = query.join(Product.category).filter(Category.slug == detected_category)
+        if effective_budget is not None:
+            query = query.filter(Product.price <= effective_budget)
+        matched_products = query.order_by(Product.rating.desc()).limit(3).all()
+
+    # 6. Ensure the text accurately explains if no items exist within budget
+    response_text = result["text"]
+    if not matched_products and effective_budget is not None:
+        cat_filter = detected_category or "products"
+        lowest_in_cat = None
+        if detected_category:
+            lowest_in_cat = (
+                db.query(Product)
+                .join(Product.category)
+                .filter(Category.slug == detected_category)
+                .order_by(Product.price.asc())
+                .first()
             )
-        ).limit(3).all()
-        matched_products = products
+        if lowest_in_cat:
+            response_text = (
+                f"No {detected_category} in our catalog are currently available under ₹{effective_budget:,.0f}. "
+                f"The entry-level option in this category is the {lowest_in_cat.name} starting at ₹{lowest_in_cat.price:,.0f}."
+            )
+        else:
+            response_text = f"No {cat_filter} are currently available in the catalog under ₹{effective_budget:,.0f}."
 
-    # Store messages in DB
-    user_msg = AIMessage(
-        conversation_id=conv.id,
-        role=MessageRole.USER,
-        content=payload.message,
-    )
-    ai_msg = AIMessage(
-        conversation_id=conv.id,
-        role=MessageRole.ASSISTANT,
-        content=result["text"],
-        product_ids=[p.id for p in matched_products],
-    )
-    db.add(user_msg)
-    db.add(ai_msg)
-    db.commit()
-
-    log_activity(db, current_user.id, "search", f"AI: {payload.message[:80]}")
+    # 7. Persist messages if user is authenticated
+    if current_user and conv:
+        user_msg = AIMessage(
+            conversation_id=conv.id,
+            role=MessageRole.USER,
+            content=payload.message,
+        )
+        ai_msg = AIMessage(
+            conversation_id=conv.id,
+            role=MessageRole.ASSISTANT,
+            content=response_text,
+            product_ids=[p.id for p in matched_products],
+        )
+        db.add(user_msg)
+        db.add(ai_msg)
+        db.commit()
+        log_activity(db, current_user.id, "search", f"AI: {payload.message[:80]}")
 
     product_refs = [
         ChatProductRef(
@@ -125,14 +152,19 @@ async def chat(
             original_price=p.original_price,
             image_url=p.image_url,
             rating=p.rating,
+            reviews_count=p.reviews_count,
             badge=p.badge,
+            short_description=p.short_description,
+            in_stock=p.in_stock,
+            features=p.features or [],
+            category=p.category.slug if p.category else None,
         )
         for p in matched_products
     ]
 
     return ChatResponse(
-        conversation_id=conv.id,
-        message=result["text"],
+        conversation_id=conv.id if conv else None,
+        message=response_text,
         products=product_refs,
         note=result.get("note"),
     )

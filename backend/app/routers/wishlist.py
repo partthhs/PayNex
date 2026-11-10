@@ -27,22 +27,28 @@ def get_wishlist(
 
 @router.post("/{product_id}", response_model=WishlistItemResponse)
 def add_to_wishlist(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    product = db.query(Product).filter(Product.id == product_id).first()
+    if product_id.isdigit():
+        product = db.query(Product).filter(Product.id == int(product_id)).first()
+    else:
+        product = db.query(Product).filter(Product.slug == product_id).first()
+
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
 
     existing = db.query(WishlistItem).filter(
         WishlistItem.user_id == current_user.id,
-        WishlistItem.product_id == product_id,
+        WishlistItem.product_id == product.id,
     ).first()
     if existing:
-        raise HTTPException(status_code=409, detail="Already in wishlist")
+        return db.query(WishlistItem).options(
+            joinedload(WishlistItem.product).joinedload(Product.category)
+        ).filter(WishlistItem.id == existing.id).first()
 
-    item = WishlistItem(user_id=current_user.id, product_id=product_id)
+    item = WishlistItem(user_id=current_user.id, product_id=product.id)
     db.add(item)
     db.commit()
     db.refresh(item)
@@ -55,13 +61,22 @@ def add_to_wishlist(
 
 @router.delete("/{product_id}")
 def remove_from_wishlist(
-    product_id: int,
+    product_id: str,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    if product_id.isdigit():
+        product = db.query(Product).filter(Product.id == int(product_id)).first()
+    else:
+        product = db.query(Product).filter(Product.slug == product_id).first()
+
+    target_id = product.id if product else (int(product_id) if product_id.isdigit() else None)
+    if not target_id:
+        raise HTTPException(status_code=404, detail="Product not found")
+
     item = db.query(WishlistItem).filter(
         WishlistItem.user_id == current_user.id,
-        WishlistItem.product_id == product_id,
+        WishlistItem.product_id == target_id,
     ).first()
     if not item:
         raise HTTPException(status_code=404, detail="Item not in wishlist")

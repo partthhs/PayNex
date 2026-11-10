@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Info, Loader2, AlertCircle, CheckCircle } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
@@ -31,6 +31,7 @@ function FormField({ label, type = 'text', placeholder, value, onChange, classNa
 
 export default function Checkout() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { cartItems, cartTotal, clearCart } = useCart()
   const { user, isAuthenticated } = useAuth()
 
@@ -47,6 +48,15 @@ export default function Checkout() {
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [statusMessage, setStatusMessage] = useState(null)
+
+  useEffect(() => {
+    if (searchParams.get('paypal_cancelled')) {
+      setStatusMessage({
+        type: 'error',
+        text: 'Payment was cancelled on PayPal. You were not charged and your cart items are preserved.',
+      })
+    }
+  }, [searchParams])
 
   const set = (field) => (e) => setForm(f => ({ ...f, [field]: e.target.value }))
 

@@ -21,6 +21,7 @@ export default function ProductCard({ product }) {
   const inCart    = cartItems.some(i => i.product.id === product.id)
   const inCompare = isInCompare(product.id)
   const maxed     = compareItems.length >= 4 && !inCompare
+  const isAvailable = product.inStock !== false && product.in_stock !== false
 
   const handleCart = () => {
     addToCart(product)
@@ -52,7 +53,7 @@ export default function ProductCard({ product }) {
             </Badge>
           </div>
         )}
-        {!product.inStock && (
+        {!isAvailable && (
           <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Out of Stock</span>
           </div>
@@ -77,7 +78,7 @@ export default function ProductCard({ product }) {
         <div className="mt-auto space-y-2 pt-3 border-t border-slate-200">
           <button
             onClick={handleCart}
-            disabled={!product.inStock}
+            disabled={!isAvailable}
             className={[
               'w-full h-9 flex items-center justify-center gap-2 rounded-lg text-xs font-semibold transition-colors',
               cartFlash

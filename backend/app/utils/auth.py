@@ -14,6 +14,7 @@ from app.config import settings
 from app.database import get_db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+optional_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", auto_error=False)
 
 
 def hash_password(password: str) -> str:
@@ -41,11 +42,24 @@ def decode_access_token(token: str) -> Optional[int]:
         return None
 
 
+def get_optional_current_user(
+    token: Optional[str] = Depends(optional_oauth2_scheme),
+    db: Session = Depends(get_db),
+):
+    from app.models import User
+    if not token:
+        return None
+    user_id = decode_access_token(token)
+    if user_id is None:
+        return None
+    return db.query(User).filter(User.id == user_id, User.is_active == True).first()
+
+
 def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
 ):
-    from app.models import User  # avoid circular imports
+    from app.models import User
     user_id = decode_access_token(token)
     if user_id is None:
         raise HTTPException(

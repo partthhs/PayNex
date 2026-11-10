@@ -29,7 +29,7 @@ def list_products(
     in_stock: Optional[bool] = Query(None),
     sort: str = Query("relevance", description="relevance|price_asc|price_desc|rating|newest"),
     page: int = Query(1, ge=1),
-    page_size: int = Query(12, ge=1, le=50),
+    page_size: int = Query(24, ge=1, le=100),
 ):
     query = db.query(Product).options(joinedload(Product.category))
 
@@ -83,7 +83,15 @@ def list_products(
 
 @router.get("/products/{slug}", response_model=ProductResponse)
 def get_product(slug: str, db: Session = Depends(get_db)):
-    product = db.query(Product).options(joinedload(Product.category)).filter(Product.slug == slug).first()
+    if slug.isdigit():
+        product = (
+            db.query(Product)
+            .options(joinedload(Product.category))
+            .filter((Product.slug == slug) | (Product.id == int(slug)))
+            .first()
+        )
+    else:
+        product = db.query(Product).options(joinedload(Product.category)).filter(Product.slug == slug).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
