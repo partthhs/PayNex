@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ShoppingCart, GitCompare, ArrowLeft, Check, Minus, Plus } from 'lucide-react'
+import { ShoppingCart, GitCompare, ArrowLeft, Check, Minus, Plus, Bell } from 'lucide-react'
 import { getProductById, getSimilarProducts } from '../data/products'
 import { productService } from '../services/productService'
 import { useCart } from '../context/CartContext'
@@ -11,6 +11,7 @@ import Badge from '../components/ui/Badge'
 import EmptyState from '../components/ui/EmptyState'
 import ProductCard from '../components/products/ProductCard'
 import Button from '../components/ui/Button'
+import PriceTrackModal from '../components/ui/PriceTrackModal'
 
 function imgFallback(e) {
   e.currentTarget.src = 'https://placehold.co/500x400/EFF6FF/1D4ED8?text=Product'
@@ -41,6 +42,7 @@ export default function ProductDetail() {
   const [qty,         setQty]         = useState(1)
   const [cartAdded,   setCartAdded]   = useState(false)
   const [compAdded,   setCompAdded]   = useState(false)
+  const [trackModalOpen, setTrackModalOpen] = useState(false)
 
   if (!product) {
     return (
@@ -111,10 +113,15 @@ export default function ProductDetail() {
               )}
             </div>
             {/* In stock pill */}
-            {isAvailable && (
+            {isAvailable ? (
               <div className="flex items-center gap-1.5 mt-3 text-xs text-green-700 font-medium">
                 <Check size={14} className="text-green-600" />
-                <span>Verified Available in Catalog</span>
+                <span>In Stock {product.stockQuantity ? `(${product.stockQuantity} available)` : 'in Catalog'}</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 mt-3 text-xs text-amber-700 font-medium">
+                <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
+                <span>Currently Out of Stock</span>
               </div>
             )}
           </div>
@@ -132,17 +139,19 @@ export default function ProductDetail() {
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-5">{product.description}</p>
 
             {/* Features */}
-            <div className="mb-6">
-              <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Key Features</h3>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {product.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
-                    <Check size={14} className="text-blue-600 mt-0.5 shrink-0" />
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {product.features && product.features.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Key Features</h3>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {product.features.map((f, i) => (
+                    <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
+                      <Check size={14} className="text-blue-600 mt-0.5 shrink-0" />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* Quantity + Cart */}
             <div className="flex flex-wrap items-center gap-3 mb-3">
@@ -179,23 +188,42 @@ export default function ProductDetail() {
               </Button>
             </div>
 
-            <Button
-              variant={inCompare ? 'secondary' : 'outline'}
-              size="md"
-              fullWidth
-              onClick={handleCompare}
-              disabled={compareItems.length >= 4 && !inCompare}
-            >
-              <GitCompare size={15} />
-              {compAdded || inCompare ? 'Added to Comparison List' : 'Add to Comparison List'}
-              {compareItems.length >= 4 && !inCompare && ' (Max 4 Items)'}
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                variant={inCompare ? 'secondary' : 'outline'}
+                size="md"
+                className="flex-1"
+                onClick={handleCompare}
+                disabled={compareItems.length >= 4 && !inCompare}
+              >
+                <GitCompare size={15} />
+                {compAdded || inCompare ? 'Added to Comparison' : 'Compare Product'}
+                {compareItems.length >= 4 && !inCompare && ' (Max 4)'}
+              </Button>
+
+              {isAvailable && (
+                <Button
+                  variant="outline"
+                  size="md"
+                  onClick={() => setTrackModalOpen(true)}
+                  className="flex-1 flex items-center justify-center gap-2 text-slate-700 hover:text-blue-600 hover:border-blue-300"
+                >
+                  <Bell size={15} /> Track Price Drop
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
+      <PriceTrackModal
+        product={product}
+        isOpen={trackModalOpen}
+        onClose={() => setTrackModalOpen(false)}
+      />
+
       {/* Specifications */}
-      {Object.keys(product.specs).length > 0 && (
+      {product.specs && Object.keys(product.specs).length > 0 && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-6">
           <h2 className="text-base font-bold text-slate-900 mb-4">Technical Specifications</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-2">

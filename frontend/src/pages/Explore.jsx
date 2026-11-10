@@ -19,6 +19,11 @@ export default function Explore() {
   const [sortBy,         setSortBy]         = useState('relevance')
   const [selectedBrands, setSelectedBrands] = useState([])
   const [filtersOpen,    setFiltersOpen]    = useState(false)
+  const [visibleCount,   setVisibleCount]   = useState(24)
+
+  useEffect(() => {
+    setVisibleCount(24)
+  }, [query, category, priceRange, selectedRating, sortBy, selectedBrands])
 
   // Fetch real product catalog from backend API
   useEffect(() => {
@@ -139,7 +144,7 @@ export default function Explore() {
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-slate-500">
-              Showing <strong className="text-slate-800">{filtered.length}</strong> product{filtered.length !== 1 ? 's' : ''}
+              Showing <strong className="text-slate-800">{filtered.length > 0 ? `1–${Math.min(visibleCount, filtered.length)}` : 0}</strong> of <strong className="text-slate-800">{filtered.length}</strong> product{filtered.length !== 1 ? 's' : ''}
               {category !== 'all' && <> in <strong className="text-slate-800">{catLabel}</strong></>}
             </p>
             {(query || category !== 'all' || selectedBrands.length > 0) && (
@@ -157,9 +162,30 @@ export default function Explore() {
               action={<Button variant="outline" size="sm" onClick={reset}>Reset Filters</Button>}
             />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-5">
-              {filtered.map(p => <ProductCard key={p.id} product={p} />)}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-5">
+                {filtered.slice(0, visibleCount).map(p => <ProductCard key={p.id} product={p} />)}
+              </div>
+
+              {visibleCount < filtered.length && (
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 pt-6 border-t border-slate-200">
+                  <Button
+                    variant="primary"
+                    onClick={() => setVisibleCount(v => v + 24)}
+                    className="w-full sm:w-auto"
+                  >
+                    Load More Products ({filtered.length - visibleCount} remaining)
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setVisibleCount(filtered.length)}
+                    className="w-full sm:w-auto text-xs"
+                  >
+                    Show All ({filtered.length})
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

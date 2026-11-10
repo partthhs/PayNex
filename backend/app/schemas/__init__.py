@@ -111,6 +111,7 @@ class ProductResponse(BaseModel):
     specs: dict[str, Any]
     badge: Optional[str]
     in_stock: bool
+    stock_quantity: int = 15
 
     class Config:
         from_attributes = True
@@ -302,3 +303,114 @@ class DashboardStats(BaseModel):
     ai_sessions: int
     comparisons_made: int
     recent_activity: list[DashboardActivity]
+
+
+# ─────────────────────────── Shopping Planner ───────────────────────────────
+
+class PlanGenerateRequest(BaseModel):
+    budget: float
+    requirements: str
+    categories: list[str] = []
+    preferred_brands: list[str] = []
+    additional_requirements: str = ""
+
+
+class PlanItemResponse(BaseModel):
+    id: Optional[int] = None
+    product_id: int
+    slug: str
+    name: str
+    brand: str
+    price: float
+    original_price: Optional[float] = None
+    image_url: Optional[str] = None
+    rating: float = 4.5
+    badge: Optional[str] = None
+    short_description: Optional[str] = None
+    category: str
+    in_stock: bool = True
+    ai_explanation: str
+
+    class Config:
+        from_attributes = True
+
+
+class ShoppingPlanResponse(BaseModel):
+    id: Optional[int] = None
+    name: str = "My Shopping Plan"
+    budget: float
+    total_cost: float
+    remaining_budget: float
+    budget_utilization: float
+    requirements: str
+    items: list[PlanItemResponse]
+    created_at: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class SavePlanRequest(BaseModel):
+    name: str
+    budget: float
+    total_cost: float
+    requirements: str
+    categories: list[str] = []
+    items: list[dict]
+
+
+class ReplaceProductRequest(BaseModel):
+    plan_id: Optional[int] = None
+    item_id: Optional[int] = None
+    exclude_slugs: list[str] = []
+    category: str
+    max_price: float
+    requirements: str = ""
+
+
+# ─────────────────────────── Price Alert ────────────────────────────────────
+
+class CreatePriceAlertRequest(BaseModel):
+    product_id: int
+    target_price: float
+
+
+class UpdatePriceAlertRequest(BaseModel):
+    target_price: float
+
+
+class PriceAlertResponse(BaseModel):
+    id: int
+    product_id: int
+    slug: str
+    name: str
+    brand: str
+    image_url: Optional[str] = None
+    current_price: float
+    target_price: float
+    initial_price: float
+    price_diff: float
+    pct_diff: float
+    status: str
+    is_active: bool
+    created_at: Optional[str] = None
+    last_notified_at: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+# ─────────────────────────── Notification ───────────────────────────────────
+
+class NotificationResponse(BaseModel):
+    id: int
+    title: str
+    message: str
+    type: str
+    link: Optional[str] = None
+    is_read: bool
+    created_at: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+

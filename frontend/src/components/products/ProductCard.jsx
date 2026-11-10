@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ShoppingCart, GitCompare, Eye, Check } from 'lucide-react'
+import { ShoppingCart, GitCompare, Eye, Check, Bell } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
 import { useCompare } from '../../context/CompareContext'
 import Badge from '../ui/Badge'
 import PriceDisplay from '../ui/PriceDisplay'
 import RatingStars from '../ui/RatingStars'
+import PriceTrackModal from '../ui/PriceTrackModal'
 
 function imgFallback(e) {
   e.currentTarget.src = `https://placehold.co/400x300/EFF6FF/1D4ED8?text=Product`
@@ -17,6 +18,7 @@ export default function ProductCard({ product }) {
 
   const [cartFlash,    setCartFlash]    = useState(false)
   const [compareFlash, setCompareFlash] = useState(false)
+  const [trackModalOpen, setTrackModalOpen] = useState(false)
 
   const inCart    = cartItems.some(i => i.product.id === product.id)
   const inCompare = isInCompare(product.id)
@@ -66,8 +68,11 @@ export default function ProductCard({ product }) {
         <h3 className="text-sm font-semibold text-slate-900 mb-1 leading-snug line-clamp-2 h-10">{product.name}</h3>
         <p className="text-xs text-slate-500 mb-2.5 line-clamp-2 leading-relaxed h-8">{product.shortDescription}</p>
         
-        <div className="mb-2">
+        <div className="mb-2 flex items-center justify-between">
           <RatingStars rating={product.rating} reviews={product.reviews} size="sm" />
+          {isAvailable && product.stockQuantity && product.stockQuantity <= 10 && (
+            <span className="text-[10px] text-amber-600 font-medium">Only {product.stockQuantity} left</span>
+          )}
         </div>
 
         <div className="mb-4 min-h-[1.75rem] flex items-center">
@@ -86,7 +91,7 @@ export default function ProductCard({ product }) {
                 : inCart
                   ? 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
                   : 'bg-blue-600 text-white hover:bg-blue-700',
-              !product.inStock ? 'opacity-50 cursor-not-allowed' : '',
+              !isAvailable ? 'opacity-50 cursor-not-allowed' : '',
             ].join(' ')}
           >
             {cartFlash
@@ -95,13 +100,13 @@ export default function ProductCard({ product }) {
             }
           </button>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <button
               onClick={handleCompare}
               disabled={maxed}
               title={maxed ? 'Maximum 4 items' : inCompare ? 'Added to compare' : 'Compare'}
               className={[
-                'flex-1 h-8 flex items-center justify-center gap-1.5 rounded-lg text-xs font-medium border transition-colors',
+                'flex-1 h-8 flex items-center justify-center gap-1 rounded-lg text-xs font-medium border transition-colors',
                 compareFlash || inCompare
                   ? 'border-blue-300 bg-blue-50 text-blue-700'
                   : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900 bg-white',
@@ -112,15 +117,32 @@ export default function ProductCard({ product }) {
               {inCompare ? 'Compared' : 'Compare'}
             </button>
 
+            {isAvailable && (
+              <button
+                type="button"
+                onClick={() => setTrackModalOpen(true)}
+                title="Track price drop"
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50 bg-white transition-colors shrink-0"
+              >
+                <Bell size={13} />
+              </button>
+            )}
+
             <Link
               to={`/product/${product.id}`}
-              className="flex-1 h-8 flex items-center justify-center gap-1.5 rounded-lg text-xs font-medium border border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900 bg-white transition-colors"
+              className="flex-1 h-8 flex items-center justify-center gap-1 rounded-lg text-xs font-medium border border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900 bg-white transition-colors"
             >
               <Eye size={12} /> Details
             </Link>
           </div>
         </div>
       </div>
+
+      <PriceTrackModal
+        product={product}
+        isOpen={trackModalOpen}
+        onClose={() => setTrackModalOpen(false)}
+      />
     </div>
   )
 }

@@ -7,14 +7,16 @@ try:
 except Exception:
     pass
 import logging
+import asyncio
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.database import engine, SessionLocal, Base
-from app.routers import auth, products, cart, wishlist, orders, payments, ai, dashboard
+from app.routers import auth, products, cart, wishlist, orders, payments, ai, dashboard, planner, price_alerts, notifications
 from app.services.seed import seed_database
+from app.utils.price_monitor import price_monitor_loop
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("paynex")
@@ -30,6 +32,7 @@ async def lifespan(app: FastAPI):
         User, UserProfile, Category, Product, CartItem,
         WishlistItem, Order, OrderItem, Payment,
         AIConversation, AIMessage, ActivityLog,
+        ShoppingPlan, ShoppingPlanItem, PriceAlert, Notification,
     )
 
     Base.metadata.create_all(bind=engine)
@@ -42,8 +45,16 @@ async def lifespan(app: FastAPI):
     finally:
         db.close()
 
+    # Start background price monitor
+    monitor_task = asyncio.create_task(price_monitor_loop(interval_seconds=1800))
+
     yield  # App is running
 
+    monitor_task.cancel()
+    try:
+        await monitor_task
+    except asyncio.CancelledError:
+        pass
     logger.info("PayNex API shutting down.")
 
 
@@ -74,8 +85,11 @@ app.include_router(cart.router,       prefix=PREFIX)
 app.include_router(wishlist.router,   prefix=PREFIX)
 app.include_router(orders.router,     prefix=PREFIX)
 app.include_router(payments.router,   prefix=PREFIX)
-app.include_router(ai.router,         prefix=PREFIX)
-app.include_router(dashboard.router,  prefix=PREFIX)
+app.include_router(ai.router,            prefix=PREFIX)
+app.include_router(dashboard.router,     prefix=PREFIX)
+app.include_router(planner.router,       prefix=PREFIX)
+app.include_router(price_alerts.router,  prefix=PREFIX)
+app.include_router(notifications.router, prefix=PREFIX)
 
 
 @app.get("/")

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { X, Zap, LayoutDashboard, MessageSquare, ShoppingBag, GitCompare, ShoppingCart, Package, User, LogOut } from 'lucide-react'
+import { X, Zap, LayoutDashboard, MessageSquare, Sparkles, ShoppingBag, GitCompare, Bell, ShoppingCart, Package, User, LogOut } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
 import { useCompare } from '../../context/CompareContext'
 import { useAuth } from '../../context/AuthContext'
@@ -7,8 +7,10 @@ import { useAuth } from '../../context/AuthContext'
 const NAV = [
   { label: 'Dashboard',       to: '/dashboard', Icon: LayoutDashboard },
   { label: 'AI Assistant',    to: '/assistant',  Icon: MessageSquare   },
+  { label: 'Smart Planner',   to: '/planner',    Icon: Sparkles        },
   { label: 'Explore Products',to: '/explore',    Icon: ShoppingBag     },
   { label: 'Compare',         to: '/compare',    Icon: GitCompare      },
+  { label: 'Price Alerts',    to: '/price-alerts', Icon: Bell          },
   { label: 'Cart',            to: '/cart',       Icon: ShoppingCart    },
   { label: 'Orders',          to: '/orders',     Icon: Package         },
   { label: 'Profile',         to: '/profile',    Icon: User            },

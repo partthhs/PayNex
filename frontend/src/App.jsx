@@ -6,6 +6,8 @@ import Login           from './pages/Login'
 import Register        from './pages/Register'
 import Dashboard       from './pages/Dashboard'
 import Assistant       from './pages/Assistant'
+import SmartPlanner    from './pages/SmartPlanner'
+import PriceAlerts     from './pages/PriceAlerts'
 import Explore         from './pages/Explore'
 import ProductDetail   from './pages/ProductDetail'
 import Compare         from './pages/Compare'
@@ -29,6 +31,8 @@ export default function App() {
       <Route element={<DashboardLayout />}>
         <Route path="/dashboard"    element={<Dashboard />}     />
         <Route path="/assistant"    element={<Assistant />}     />
+        <Route path="/planner"      element={<SmartPlanner />}  />
+        <Route path="/price-alerts" element={<PriceAlerts />}   />
         <Route path="/explore"      element={<Explore />}       />
         <Route path="/product/:id"  element={<ProductDetail />} />
         <Route path="/compare"      element={<Compare />}       />

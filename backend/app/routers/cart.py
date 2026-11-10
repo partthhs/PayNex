@@ -73,7 +73,7 @@ def add_to_cart(
     if existing:
         existing.quantity = min(existing.quantity + payload.quantity, 10)
     else:
-        item = CartItem(user_id=current_user.id, product_id=payload.product_id, quantity=payload.quantity)
+        item = CartItem(user_id=current_user.id, product_id=product.id, quantity=payload.quantity)
         db.add(item)
 
     db.commit()

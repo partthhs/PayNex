@@ -30,10 +30,10 @@ def create_order(
     # 2. Verify all products are in stock and calculate totals server-side
     subtotal = 0.0
     for cart_item in cart_items:
-        if not cart_item.product.in_stock:
+        if not cart_item.product.in_stock or (cart_item.product.stock_quantity is not None and cart_item.product.stock_quantity < cart_item.quantity):
             raise HTTPException(
                 status_code=400,
-                detail=f"{cart_item.product.name} is out of stock",
+                detail=f"{cart_item.product.name} is out of stock or has insufficient quantity",
             )
         subtotal += cart_item.product.price * cart_item.quantity
 

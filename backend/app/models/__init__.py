@@ -60,6 +60,9 @@ class User(Base):
     orders: Mapped[list["Order"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     conversations: Mapped[list["AIConversation"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     activities: Mapped[list["ActivityLog"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    shopping_plans: Mapped[list["ShoppingPlan"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    price_alerts: Mapped[list["PriceAlert"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    notifications: Mapped[list["Notification"]] = relationship(back_populates="user", cascade="all, delete-orphan")
 
 
 class UserProfile(Base):
@@ -113,6 +116,7 @@ class Product(Base):
     specs: Mapped[Optional[dict]] = mapped_column(JSON, default=dict)
     badge: Mapped[Optional[str]] = mapped_column(String(50))
     in_stock: Mapped[bool] = mapped_column(Boolean, default=True)
+    stock_quantity: Mapped[int] = mapped_column(Integer, default=15)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     # Relationships
@@ -120,6 +124,8 @@ class Product(Base):
     cart_items: Mapped[list["CartItem"]] = relationship(back_populates="product")
     wishlist_items: Mapped[list["WishlistItem"]] = relationship(back_populates="product")
     order_items: Mapped[list["OrderItem"]] = relationship(back_populates="product")
+    shopping_plan_items: Mapped[list["ShoppingPlanItem"]] = relationship(back_populates="product")
+    price_alerts: Mapped[list["PriceAlert"]] = relationship(back_populates="product")
 
     __table_args__ = (
         Index("ix_products_brand_category", "brand", "category_id"),
@@ -272,4 +278,82 @@ class ActivityLog(Base):
 
     __table_args__ = (
         Index("ix_activity_user_created", "user_id", "created_at"),
+    )
+
+
+# ─────────────────────────── Feature 1: AI Smart Shopping Planner ───────────
+
+class ShoppingPlan(Base):
+    __tablename__ = "shopping_plans"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    budget: Mapped[float] = mapped_column(Float, nullable=False)
+    total_cost: Mapped[float] = mapped_column(Float, nullable=False)
+    requirements: Mapped[str] = mapped_column(Text, nullable=False)
+    categories: Mapped[Optional[list]] = mapped_column(JSON, default=list)
+    preferred_brands: Mapped[Optional[list]] = mapped_column(JSON, default=list)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user: Mapped["User"] = relationship(back_populates="shopping_plans")
+    items: Mapped[list["ShoppingPlanItem"]] = relationship(
+        back_populates="plan", cascade="all, delete-orphan", order_by="ShoppingPlanItem.id"
+    )
+
+
+class ShoppingPlanItem(Base):
+    __tablename__ = "shopping_plan_items"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    plan_id: Mapped[int] = mapped_column(ForeignKey("shopping_plans.id", ondelete="CASCADE"), nullable=False, index=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"), nullable=False)
+    ai_explanation: Mapped[str] = mapped_column(Text, nullable=False)
+    price_at_addition: Mapped[float] = mapped_column(Float, nullable=False)
+
+    plan: Mapped["ShoppingPlan"] = relationship(back_populates="items")
+    product: Mapped["Product"] = relationship(back_populates="shopping_plan_items")
+
+
+# ─────────────────────────── Feature 2: Price Tracking & Alerts ─────────────
+
+class PriceAlert(Base):
+    __tablename__ = "price_alerts"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"), nullable=False, index=True)
+    target_price: Mapped[float] = mapped_column(Float, nullable=False)
+    initial_price: Mapped[float] = mapped_column(Float, nullable=False)
+    status: Mapped[str] = mapped_column(String(50), default="tracking")  # tracking, target_reached, price_dropped
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    last_notified_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    user: Mapped["User"] = relationship(back_populates="price_alerts")
+    product: Mapped["Product"] = relationship(back_populates="price_alerts")
+
+    __table_args__ = (
+        Index("ix_price_alerts_user_product", "user_id", "product_id"),
+    )
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    type: Mapped[str] = mapped_column(String(50), default="price_drop")  # price_drop, target_reached, system, plan
+    link: Mapped[Optional[str]] = mapped_column(String(255))
+    is_read: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    user: Mapped["User"] = relationship(back_populates="notifications")
+
+    __table_args__ = (
+        Index("ix_notifications_user_read", "user_id", "is_read"),
     )

@@ -12,6 +12,7 @@ export function normalizeProduct(p) {
     category: p.category?.slug || p.category,
     shortDescription: p.short_description || p.shortDescription,
     inStock: p.in_stock !== undefined ? Boolean(p.in_stock) : (p.inStock !== undefined ? Boolean(p.inStock) : true),
+    stockQuantity: p.stock_quantity !== undefined ? p.stock_quantity : (p.stockQuantity !== undefined ? p.stockQuantity : 15),
   }
 }
 
