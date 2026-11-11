@@ -1,11 +1,12 @@
 import api from './api'
 
 export const aiService = {
-  async chat({ message, conversationId, budget }) {
+  async chat({ message, conversationId, budget, history }) {
     const { data } = await api.post('/ai/chat', {
       message,
       conversation_id: conversationId || null,
       budget: budget ? parseFloat(budget) : null,
+      history: history || null,
     })
     return data
   },

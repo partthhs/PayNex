@@ -7,6 +7,7 @@ from sqlalchemy import or_, func
 from app.database import get_db
 from app.models import Product, Category
 from app.schemas import ProductResponse, ProductListResponse, CategoryResponse
+from app.services.channel3 import channel3_service
 
 router = APIRouter(tags=["Products"])
 
@@ -18,7 +19,7 @@ def list_categories(db: Session = Depends(get_db)):
 
 
 @router.get("/products", response_model=ProductListResponse)
-def list_products(
+async def list_products(
     db: Session = Depends(get_db),
     q: Optional[str] = Query(None, description="Search query"),
     category: Optional[str] = Query(None, description="Category slug"),
@@ -71,18 +72,42 @@ def list_products(
 
     total = query.count()
     items = query.offset((page - 1) * page_size).limit(page_size).all()
+    item_list = list(items)
+
+    # Supplement with Channel3 results if configured and user is searching
+    if q and channel3_service.is_configured and page == 1:
+        try:
+            external_items = await channel3_service.search_products(q, limit=6)
+            # Filter external items by budget if specified
+            if max_price is not None:
+                external_items = [x for x in external_items if x.get("price", 0) <= max_price]
+            if min_price is not None:
+                external_items = [x for x in external_items if x.get("price", 0) >= min_price]
+            
+            # Append non-duplicate external items
+            item_list.extend(external_items)
+            total += len(external_items)
+        except Exception:
+            pass # Keep PostgreSQL results safe
 
     return ProductListResponse(
-        items=items,
+        items=item_list,
         total=total,
         page=page,
         page_size=page_size,
-        total_pages=(total + page_size - 1) // page_size,
+        total_pages=(total + page_size - 1) // page_size if total > 0 else 1,
     )
 
 
 @router.get("/products/{slug}", response_model=ProductResponse)
-def get_product(slug: str, db: Session = Depends(get_db)):
+async def get_product(slug: str, db: Session = Depends(get_db)):
+    if slug.startswith("ch3-") or slug.startswith("ch3_"):
+        # Retrieve from Channel3
+        detail = await channel3_service.get_product_detail(slug)
+        if detail:
+            return detail
+        raise HTTPException(status_code=404, detail="Partner product not found")
+
     if slug.isdigit():
         product = (
             db.query(Product)

@@ -41,12 +41,12 @@ export default function ProductCard({ product }) {
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm hover:border-slate-300 transition-colors flex flex-col overflow-hidden h-full">
       {/* Image */}
-      <div className="relative overflow-hidden bg-slate-50 h-48 w-full shrink-0">
+      <div className="relative bg-slate-50 h-48 w-full shrink-0 flex items-center justify-center">
         <img
           src={product.image}
           alt={product.name}
           onError={imgFallback}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain p-2"
         />
         {product.badge && (
           <div className="absolute top-2.5 left-2.5">

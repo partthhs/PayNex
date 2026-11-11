@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     PAYPAL_MODE: str = "sandbox"  # "sandbox" or "live"
     PAYPAL_BASE_URL: str = "https://api-m.sandbox.paypal.com"
 
+    # Channel3 API
+    CHANNEL3_API_KEY: Optional[str] = None
+    CHANNEL3_BASE_URL: str = "https://api.trychannel3.com/v1"
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

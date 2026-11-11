@@ -92,12 +92,12 @@ export default function ProductDetail() {
 
           {/* Image */}
           <div className="lg:w-2/5 shrink-0">
-            <div className="relative rounded-lg overflow-hidden bg-slate-50 aspect-square border border-slate-200">
+            <div className="relative rounded-lg overflow-hidden bg-slate-50 aspect-square border border-slate-200 flex items-center justify-center p-4">
               <img
                 src={product.image}
                 alt={product.name}
                 onError={imgFallback}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
               {product.badge && (
                 <div className="absolute top-3 left-3">

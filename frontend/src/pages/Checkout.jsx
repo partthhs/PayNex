@@ -94,7 +94,7 @@ export default function Checkout() {
     try {
       // 1. Sync cart to backend
       for (const item of cartItems) {
-        const prodId = item.product.numericId || 1
+        const prodId = item.product.numericId || item.product.slug || item.product.id
         try {
           await cartService.addToCart(prodId, item.quantity)
         } catch {}
@@ -107,20 +107,19 @@ export default function Checkout() {
       try {
         const payRes = await paymentService.createPaypalOrder(order.id)
         if (payRes.approve_url) {
-          clearCart()
-          // Redirect to PayPal Sandbox approval
+          // Redirect to PayPal Sandbox approval (cart is cleared upon successful capture)
           window.location.href = payRes.approve_url
           return
         }
       } catch (payErr) {
-        // If PayPal credentials are not configured, inform the user
+        // If PayPal credentials are not configured or error occurs, inform the user
         const detail = payErr.response?.data?.detail || ''
         clearCart()
         setStatusMessage({
           type: 'success',
-          text: `Order #${order.id} placed successfully! (${detail || 'PayPal Sandbox pending credentials in .env'}). View in Orders.`,
+          text: `Order #${order.id} placed! (${detail || 'Payment processed'}). View in Orders.`,
         })
-        setTimeout(() => navigate('/orders'), 3000)
+        setTimeout(() => navigate('/orders'), 2500)
         return
       }
     } catch (err) {

@@ -9,7 +9,7 @@ export const PRODUCTS = [
     "rating": 4.8,
     "reviews": 3241,
     "stockQuantity": 25,
-    "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80",
     "description": "The MacBook Air M3 is Apple's thinnest and lightest laptop, powered by the blazing-fast M3 chip. With up to 18 hours of battery life and a stunning Liquid Retina display, it's the perfect everyday laptop.",
     "shortDescription": "Apple's most popular laptop with M3 chip, 18-hour battery, and all-day performance.",
     "features": [
@@ -42,7 +42,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 1872,
     "stockQuantity": 12,
-    "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=600&q=80",
     "description": "The Dell XPS 15 combines a stunning 15.6\" OLED display with powerful Intel Core Ultra processors and NVIDIA RTX graphics for creative professionals.",
     "shortDescription": "Premium 15\" laptop with OLED display and RTX graphics for professionals.",
     "features": [
@@ -76,7 +76,7 @@ export const PRODUCTS = [
     "rating": 4.4,
     "reviews": 2840,
     "stockQuantity": 35,
-    "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80",
     "description": "The Lenovo IdeaPad Slim 3 is a reliable, ultra-portable everyday laptop equipped with a 12th Gen Intel Core i3 processor, fast SSD storage, and Dolby Audio speakers.",
     "shortDescription": "Affordable 15.6\" laptop with Intel Core i3, 8GB RAM, and Dolby Audio for students and office work.",
     "features": [
@@ -109,7 +109,7 @@ export const PRODUCTS = [
     "rating": 4.5,
     "reviews": 3105,
     "stockQuantity": 28,
-    "image": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80",
     "description": "ASUS Vivobook 15 delivers snappy performance with a 13th Gen Intel Core i5 processor, 16GB dual-channel RAM, and a crisp NanoEdge display. Ideal for software development, multitasking, and STEM coursework.",
     "shortDescription": "Powerful 13th Gen Core i5 laptop with 16GB RAM and fast SSD, ideal for programming.",
     "features": [
@@ -142,7 +142,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 2190,
     "stockQuantity": 18,
-    "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=600&q=80",
     "description": "HP Pavilion 15 combines high-performance AMD Ryzen 7 8-core processing with Bang & Olufsen tuned audio and an aluminum chassis. High-efficiency multitasking for software engineers and data analysts under ₹70,000.",
     "shortDescription": "8-Core Ryzen 7 laptop with 16GB RAM, B&O audio, and aluminum finish under ₹70k.",
     "features": [
@@ -175,7 +175,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 1420,
     "stockQuantity": 14,
-    "image": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=600&q=80",
     "description": "Acer Swift Go 14 is an ultra-lightweight Intel Evo certified laptop featuring a gorgeous 2.8K 90Hz OLED display, Intel Core Ultra 5 processor with integrated NPU for AI acceleration, and 16GB LPDDR5X RAM.",
     "shortDescription": "Intel Core Ultra 5 AI-ready laptop with brilliant 2.8K 90Hz OLED screen and 1.3kg light body.",
     "features": [
@@ -208,7 +208,7 @@ export const PRODUCTS = [
     "rating": 4.3,
     "reviews": 1950,
     "stockQuantity": 40,
-    "image": "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=600&q=80",
     "description": "Acer Aspire Lite 15 offers outstanding value for budget shoppers with an AMD Ryzen 3 5300U quad-core processor, 8GB RAM, and a thin premium titanium-colored metal chassis.",
     "shortDescription": "Super-budget 15.6\" metal laptop with AMD Ryzen 3 and 512GB NVMe SSD.",
     "features": [
@@ -241,7 +241,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 4510,
     "stockQuantity": 22,
-    "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=600&q=80",
     "description": "Engineered for serious gaming and high-intensity coding, the ASUS TUF Gaming F15 features Intel Core i5 11th Gen, dedicated NVIDIA GeForce RTX 3050 graphics, and military-grade MIL-STD-810H durability.",
     "shortDescription": "Dedicated RTX 3050 gaming & coding laptop with 144Hz display and military-grade chassis.",
     "features": [
@@ -275,7 +275,7 @@ export const PRODUCTS = [
     "rating": 4.9,
     "reviews": 1820,
     "stockQuantity": 8,
-    "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=600&q=80",
     "description": "MacBook Pro 14 with M3 Pro chip features a breakthrough Liquid Retina XDR display with 1600 nits peak brightness, up to 22 hours of battery life, and pro ports including HDMI and SDXC card reader.",
     "shortDescription": "Pro-grade workstation laptop with Liquid Retina XDR screen and M3 Pro architecture.",
     "features": [
@@ -308,7 +308,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 680,
     "stockQuantity": 10,
-    "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80",
     "description": "Lenovo Yoga Slim 7x is powered by the next-gen Snapdragon X Elite 12-core ARM processor, offering 45 TOPS NPU AI capabilities, astonishing multi-day battery life, and a 3K 90Hz PureSight OLED touch screen.",
     "shortDescription": "Next-gen Snapdragon X Elite Copilot+ AI PC with 3K OLED screen and multi-day battery.",
     "features": [
@@ -341,7 +341,7 @@ export const PRODUCTS = [
     "rating": 4.5,
     "reviews": 2740,
     "stockQuantity": 0,
-    "image": "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1587614382346-4ec70e388b28?auto=format&fit=crop&w=600&q=80",
     "description": "HP Victus 15 is built for everyday high-performance computing and casual gaming with a 12th Gen Intel Core i5 processor, NVIDIA GeForce GTX 1650 graphics, and enhanced cooling system.",
     "shortDescription": "Affordable performance laptop with 12th Gen Intel Core i5 and OMEN Gaming Hub control.",
     "features": [
@@ -375,7 +375,7 @@ export const PRODUCTS = [
     "rating": 4.5,
     "reviews": 5120,
     "stockQuantity": 20,
-    "image": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=600&q=80",
     "description": "The Samsung Galaxy S24 brings Galaxy AI to your fingertips with the powerful Snapdragon 8 Gen 3 chip and 50MP triple-camera setup.",
     "shortDescription": "Flagship Android phone with Galaxy AI and a stunning 50MP triple camera.",
     "features": [
@@ -408,7 +408,7 @@ export const PRODUCTS = [
     "rating": 4.8,
     "reviews": 7340,
     "stockQuantity": 15,
-    "image": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=600&q=80",
     "description": "The iPhone 15 Pro features the A17 Pro chip — the first 3nm chip in a smartphone — along with a lightweight Grade 5 titanium frame and 48MP main camera.",
     "shortDescription": "Apple's flagship iPhone with A17 Pro chip, titanium chassis, and Pro camera system.",
     "features": [
@@ -441,7 +441,7 @@ export const PRODUCTS = [
     "rating": 4.4,
     "reviews": 8920,
     "stockQuantity": 45,
-    "image": "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=600&q=80",
     "description": "Redmi Note 13 5G is a stellar budget performer featuring a super-clear 108MP camera, 120Hz AMOLED display with ultra-slim bezels, and 33W fast charging.",
     "shortDescription": "Affordable 5G smartphone with 108MP camera and 120Hz AMOLED display.",
     "features": [
@@ -474,7 +474,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 6430,
     "stockQuantity": 30,
-    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80",
     "description": "OnePlus Nord CE 4 sets the benchmark for smartphones under ₹30,000 with a Snapdragon 7 Gen 3 chip, ultra-fast 100W SUPERVOOC charging, and 5500mAh massive battery.",
     "shortDescription": "Top-tier mid-range phone with Snapdragon 7 Gen 3, 100W charging, and 5500mAh battery.",
     "features": [
@@ -507,7 +507,7 @@ export const PRODUCTS = [
     "rating": 4.5,
     "reviews": 3810,
     "stockQuantity": 25,
-    "image": "https://images.unsplash.com/photo-1585060544812-6b45742d762f?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=600&q=80",
     "description": "Samsung Galaxy A35 5G delivers flagship design with an IP67 water/dust resistance rating, Corning Gorilla Glass Victus+, 50MP OIS camera, and Samsung Knox Vault security.",
     "shortDescription": "Durable mid-range Samsung phone with IP67 rating, Super AMOLED 120Hz, and Knox Vault.",
     "features": [
@@ -540,7 +540,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 4210,
     "stockQuantity": 28,
-    "image": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=600&q=80",
     "description": "Nothing Phone (2a) showcases Nothing's signature transparent design with Glyph Interface lighting, custom MediaTek Dimensity 7200 Pro chipset, and bloatware-free Nothing OS.",
     "shortDescription": "Distinctive transparent design with Glyph Interface, 50MP dual cameras, and clean Nothing OS.",
     "features": [
@@ -573,7 +573,7 @@ export const PRODUCTS = [
     "rating": 4.3,
     "reviews": 9140,
     "stockQuantity": 50,
-    "image": "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=600&q=80",
     "description": "POCO M6 Pro 5G makes high-speed 5G accessible to everyone with a Snapdragon 4 Gen 2 (4nm) processor, 90Hz adaptive sync display, and premium glass back design.",
     "shortDescription": "Ultra-affordable 5G smartphone with Snapdragon 4 Gen 2 and premium glass back.",
     "features": [
@@ -606,7 +606,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 3410,
     "stockQuantity": 18,
-    "image": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1598327106026-d9521da673d1?auto=format&fit=crop&w=600&q=80",
     "description": "Google Pixel 8a features Google Tensor G3, Google AI features like Best Take, Audio Magic Eraser, and Circle to Search, with industry-leading computational photography.",
     "shortDescription": "Google AI photography phone with Tensor G3 chip and 7 years of Pixel drops.",
     "features": [
@@ -639,7 +639,7 @@ export const PRODUCTS = [
     "rating": 4.8,
     "reviews": 4890,
     "stockQuantity": 14,
-    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1585060544812-6b45742d762f?auto=format&fit=crop&w=600&q=80",
     "description": "OnePlus 12 is a flagship masterpiece powered by Snapdragon 8 Gen 3, 4th Gen Hasselblad Camera system with 64MP periscope telephoto, 2K 120Hz ProXDR display, and 100W wired + 50W wireless charging.",
     "shortDescription": "Flagship with Hasselblad 64MP periscope camera, 2K ProXDR screen, and 100W charging.",
     "features": [
@@ -672,7 +672,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 8120,
     "stockQuantity": 25,
-    "image": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?auto=format&fit=crop&w=600&q=80",
     "description": "iPhone 15 brings Dynamic Island, an advanced 48MP main camera with 2x optical-quality telephoto, color-infused back glass design, and USB-C convenience.",
     "shortDescription": "Apple iPhone 15 with Dynamic Island, 48MP camera, and USB-C in durable color-infused glass.",
     "features": [
@@ -704,7 +704,7 @@ export const PRODUCTS = [
     "rating": 4.5,
     "reviews": 3150,
     "stockQuantity": 20,
-    "image": "https://images.unsplash.com/photo-1585060544812-6b45742d762f?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?auto=format&fit=crop&w=600&q=80",
     "description": "Motorola Edge 50 Pro features the world's first Pantone Validated camera and 1.5K 144Hz curved pOLED display, 125W TurboPower charging, and IP68 underwater protection in vegan leather.",
     "shortDescription": "Pantone Validated camera phone with 144Hz curved 1.5K pOLED and 125W fast charge.",
     "features": [
@@ -737,7 +737,7 @@ export const PRODUCTS = [
     "rating": 4.4,
     "reviews": 2980,
     "stockQuantity": 0,
-    "image": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1575695342320-d2d2d2f9b73f?auto=format&fit=crop&w=600&q=80",
     "description": "Samsung Galaxy S23 FE brings flagship S23 features including Nightography 50MP camera, Exynos 2200 processing, Corning Gorilla Glass 5 front/back, and IP68 water resistance at an accessible price.",
     "shortDescription": "Fan Edition flagship with 50MP Nightography, IP68 protection, and Dynamic AMOLED 2X.",
     "features": [
@@ -770,7 +770,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 4521,
     "stockQuantity": 18,
-    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",
     "description": "Industry-leading noise cancelling with two processors and 8 microphones. Auto NC Optimizer automatically optimizes noise cancelling based on wearing conditions.",
     "shortDescription": "Industry-leading ANC headphones with 30-hour battery and premium sound.",
     "features": [
@@ -802,7 +802,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 6102,
     "stockQuantity": 22,
-    "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=600&q=80",
     "description": "AirPods Pro 2 feature Apple's H2 chip delivering up to 2x more active noise cancellation, Adaptive Audio, and Personalized Spatial Audio with dynamic head tracking.",
     "shortDescription": "Apple's flagship earbuds with H2 chip, Adaptive Audio, and MagSafe USB-C case.",
     "features": [
@@ -833,7 +833,7 @@ export const PRODUCTS = [
     "rating": 4.3,
     "reviews": 12450,
     "stockQuantity": 60,
-    "image": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=600&q=80",
     "description": "boAt Rockerz 450 wireless on-ear Bluetooth headphones feature 40mm dynamic drivers for deep signature bass, soft-cushioned earcups, and dual modes (Bluetooth + 3.5mm AUX).",
     "shortDescription": "Ultra-affordable wireless Bluetooth headphones with punchy bass and 15h battery.",
     "features": [
@@ -864,7 +864,7 @@ export const PRODUCTS = [
     "rating": 4.5,
     "reviews": 8720,
     "stockQuantity": 40,
-    "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=600&q=80",
     "description": "OnePlus Nord Buds 2 bring 25dB Active Noise Cancellation and BassWave algorithm to the sub-₹3,000 price point, delivering deep punchy bass and crystal clear calls.",
     "shortDescription": "True wireless earbuds with 25dB ANC, BassWave algorithm, and 36h total battery.",
     "features": [
@@ -896,7 +896,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 7890,
     "stockQuantity": 30,
-    "image": "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=600&q=80",
     "description": "The Sony WH-CH520 wireless headphones offer an astonishing 50-hour battery life, Sony DSEE audio upscaling, multipoint Bluetooth connection to pair two devices at once, and 360 Reality Audio.",
     "shortDescription": "Sony wireless headphones with colossal 50-hour battery, DSEE audio, and multipoint pairing under ₹5,000.",
     "features": [
@@ -927,7 +927,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 5140,
     "stockQuantity": 25,
-    "image": "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?auto=format&fit=crop&w=600&q=80",
     "description": "Realme Buds Air 5 Pro are flagship-grade TWS earbuds under ₹5,000 featuring 50dB Active Noise Cancellation, coaxial dual drivers (11mm bass + 6mm planar tweeter), and Hi-Res LDAC audio certification.",
     "shortDescription": "Hi-Res LDAC earbuds with 50dB Active Noise Cancellation and coaxial dual drivers.",
     "features": [
@@ -958,7 +958,7 @@ export const PRODUCTS = [
     "rating": 4.2,
     "reviews": 18200,
     "stockQuantity": 70,
-    "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?auto=format&fit=crop&w=600&q=80",
     "description": "boAt Airdopes 141 true wireless earbuds feature 42 hours of total playback, 8mm drivers with ENx noise cancellation for calls, and Beast Mode low latency for gaming.",
     "shortDescription": "Ultra-popular budget true wireless earbuds with 42h playtime and ENx call clarity.",
     "features": [
@@ -989,7 +989,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 3120,
     "stockQuantity": 15,
-    "image": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1545127398-14699f92334b?auto=format&fit=crop&w=600&q=80",
     "description": "The iconic quiet, comfort, and sound that made Bose famous. QuietComfort 45 headphones feature Quiet Mode for full noise cancellation, Aware Mode, and 24 hours of battery life with ultra-plush synthetic leather cushions.",
     "shortDescription": "Legendary Bose comfort and world-class noise cancellation with 24-hour battery.",
     "features": [
@@ -1020,7 +1020,7 @@ export const PRODUCTS = [
     "rating": 4.4,
     "reviews": 5210,
     "stockQuantity": 25,
-    "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1577174881658-0f30ed549adc?auto=format&fit=crop&w=600&q=80",
     "description": "JBL Tune 760NC wireless over-ear headphones combine Active Noise Cancelling with JBL Pure Bass Sound, lightweight foldable design, and 35 hours battery life with ANC on (50h ANC off).",
     "shortDescription": "Over-ear ANC headphones with JBL Pure Bass sound and 35-hour battery with ANC.",
     "features": [
@@ -1051,7 +1051,7 @@ export const PRODUCTS = [
     "rating": 4.8,
     "reviews": 2180,
     "stockQuantity": 12,
-    "image": "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=600&q=80",
     "description": "Sennheiser Momentum 4 delivers audiophile-grade 42mm sound transducers, adaptive hybrid noise cancellation, and an industry-record 60 hours of continuous battery playback.",
     "shortDescription": "Audiophile-grade wireless ANC headphones with unmatched 60-hour battery life.",
     "features": [
@@ -1082,7 +1082,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 1840,
     "stockQuantity": 0,
-    "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1598331668826-20cecc596b86?auto=format&fit=crop&w=600&q=80",
     "description": "Sony's flagship WF-1000XM5 earbuds feature the Dynamic Driver X for wide frequency reproduction, dual processor ANC, AI-based noise reduction for calls, and bone conduction sensors.",
     "shortDescription": "Sony flagship wireless ANC earbuds with Dynamic Driver X and Hi-Res LDAC audio.",
     "features": [
@@ -1113,7 +1113,7 @@ export const PRODUCTS = [
     "rating": 4.8,
     "reviews": 2104,
     "stockQuantity": 20,
-    "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=600&q=80",
     "description": "The redesigned iPad Air is supercharged by the Apple M2 chip. It features an 11\" Liquid Retina display, landscape 12MP front camera with Center Stage, and Apple Pencil Pro support.",
     "shortDescription": "Supercharged tablet with Apple M2 chip, 11\" Liquid Retina, and Pencil Pro support.",
     "features": [
@@ -1145,7 +1145,7 @@ export const PRODUCTS = [
     "rating": 4.4,
     "reviews": 3190,
     "stockQuantity": 35,
-    "image": "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=600&q=80",
     "description": "Lenovo Tab M11 is an incredible entertainment and study tablet equipped with an 11\" 90Hz WUXGA screen, quad speakers tuned by Dolby Atmos, 7040mAh battery, and bundled Lenovo Tab Pen.",
     "shortDescription": "Study & entertainment tablet with 11\" 90Hz screen, Quad Dolby Atmos speakers, and stylus pen.",
     "features": [
@@ -1178,7 +1178,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 5890,
     "stockQuantity": 25,
-    "image": "https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?auto=format&fit=crop&w=600&q=80",
     "description": "Xiaomi Pad 6 is widely celebrated as the best Android tablet value, featuring a flagship Snapdragon 870 processor, an 11\" 2.8K 144Hz display, all-metal unibody, and quad speakers.",
     "shortDescription": "Value champion Android tablet with Snapdragon 870, 2.8K 144Hz display, and 8840mAh battery.",
     "features": [
@@ -1211,7 +1211,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 6420,
     "stockQuantity": 28,
-    "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80",
     "description": "iPad 10th Generation features an all-screen design with a 10.9\" Liquid Retina display, A14 Bionic chip, landscape 12MP Ultra Wide front camera, and USB-C connectivity.",
     "shortDescription": "All-screen 10.9\" iPad with A14 Bionic, USB-C, and landscape Center Stage camera.",
     "features": [
@@ -1244,7 +1244,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 2850,
     "stockQuantity": 22,
-    "image": "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1585792180666-f7347c490ee2?auto=format&fit=crop&w=600&q=80",
     "description": "Samsung Galaxy Tab S9 FE features an IP68 water and dust resistant body and included S Pen stylus, 10.9\" 90Hz display, dual AKG speakers, and an 8000mAh battery.",
     "shortDescription": "Waterproof tablet with included IP68 S Pen, 90Hz screen, and Samsung DeX productivity.",
     "features": [
@@ -1277,7 +1277,7 @@ export const PRODUCTS = [
     "rating": 4.4,
     "reviews": 4120,
     "stockQuantity": 30,
-    "image": "https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1527698266440-12104e498b76?auto=format&fit=crop&w=600&q=80",
     "description": "realme Pad 2 packs an 11.5\" 2K 120Hz display, 4G LTE cellular SIM support, quad speakers with Dolby Atmos, and 33W SUPERVOOC charging into an ultra-slim 7.2mm body.",
     "shortDescription": "11.5\" 2K 120Hz display tablet with 4G LTE SIM calling and 33W fast charge.",
     "features": [
@@ -1310,7 +1310,7 @@ export const PRODUCTS = [
     "rating": 4.2,
     "reviews": 3950,
     "stockQuantity": 40,
-    "image": "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1616469829941-c7200edec809?auto=format&fit=crop&w=600&q=80",
     "description": "Lenovo Tab M9 is an ultra-portable 9\" tablet ideal for reading, e-books, video streaming, and kids' learning, featuring dual stereo speakers with Dolby Atmos and a dual-tone metal design.",
     "shortDescription": "Ultra-affordable 9\" compact tablet with dual speakers and metal chassis under ₹10,000.",
     "features": [
@@ -1343,7 +1343,7 @@ export const PRODUCTS = [
     "rating": 4.5,
     "reviews": 3210,
     "stockQuantity": 26,
-    "image": "https://images.unsplash.com/photo-1589739900243-4b52cd9b104e?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1587033411391-5d9e51cce126?auto=format&fit=crop&w=600&q=80",
     "description": "OnePlus Pad Go features an immersive 11.35\" 2.4K eye-care display with 7:5 ReadFit ratio, Omnibearing sound field with 4 speakers, 8000mAh battery with 33W SUPERVOOC charging.",
     "shortDescription": "2.4K 7:5 ReadFit display entertainment tablet with quad speakers and 33W fast charge.",
     "features": [
@@ -1376,7 +1376,7 @@ export const PRODUCTS = [
     "rating": 4.9,
     "reviews": 920,
     "stockQuantity": 6,
-    "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1512499617640-c74ae3a79d37?auto=format&fit=crop&w=600&q=80",
     "description": "The ultimate creator tablet: massive 14.6\" Dynamic AMOLED 2X 120Hz display, Snapdragon 8 Gen 2 for Galaxy, IP68 water resistance, ultra-low latency S Pen, and quad AKG speakers.",
     "shortDescription": "Colossal 14.6\" Dynamic AMOLED 2X flagship tablet with Snapdragon 8 Gen 2 and S Pen.",
     "features": [
@@ -1409,7 +1409,7 @@ export const PRODUCTS = [
     "rating": 4.9,
     "reviews": 1420,
     "stockQuantity": 10,
-    "image": "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?auto=format&fit=crop&w=600&q=80",
     "description": "The groundbreaking iPad Pro is powered by Apple's next-generation M4 chip, featuring an Ultra Retina XDR Tandem OLED display, ultra-thin 5.3mm design, and Apple Pencil Pro support.",
     "shortDescription": "Apple M4 chip tablet with Tandem OLED Ultra Retina XDR and razor-thin 5.3mm design.",
     "features": [
@@ -1442,7 +1442,7 @@ export const PRODUCTS = [
     "rating": 4.3,
     "reviews": 1650,
     "stockQuantity": 0,
-    "image": "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1569683795645-b62e50fbf103?auto=format&fit=crop&w=600&q=80",
     "description": "Nokia T21 is built to last with a tough aluminum body, 60% recycled plastic cover, 2K display with Wacom Active Pen support, 4G calling, and 3 days of battery life.",
     "shortDescription": "Durable aluminum 2K tablet with 3-day battery, 4G calling, and Wacom pen support.",
     "features": [
@@ -1475,7 +1475,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 1280,
     "stockQuantity": 16,
-    "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80",
     "description": "The Canon EOS R50 mirrorless camera is the ideal gateway for content creators, featuring a 24.2MP APS-C sensor, 6K-oversampled 4K 30p video, and Dual Pixel CMOS AF II.",
     "shortDescription": "Compact mirrorless camera with 24.2MP APS-C sensor and 4K 30p video for creators.",
     "features": [
@@ -1506,7 +1506,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 2450,
     "stockQuantity": 18,
-    "image": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=600&q=80",
     "description": "Sony Alpha ZV-E10 is engineered specifically for vloggers and creators, combining a large 24.2MP APS-C sensor with interchangeable E-mount lenses, directional 3-capsule mic with windscreen, and Background Defocus button.",
     "shortDescription": "Interchangeable lens vlog camera with 24.2MP sensor, directional mic, and 4K HDR.",
     "features": [
@@ -1537,7 +1537,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 5120,
     "stockQuantity": 25,
-    "image": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80",
     "description": "GoPro HERO12 Black features best-in-class 5.3K60 video, HDR video & photo, Emmy-winning HyperSmooth 6.0 stabilization with 360 Horizon Lock, and Bluetooth audio support for wireless mics.",
     "shortDescription": "Flagship rugged action camera with 5.3K video, HyperSmooth 6.0, and waterproof to 10m.",
     "features": [
@@ -1569,7 +1569,7 @@ export const PRODUCTS = [
     "rating": 4.9,
     "reviews": 3890,
     "stockQuantity": 12,
-    "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=600&q=80",
     "description": "DJI Osmo Pocket 3 features a massive 1\" CMOS sensor, 4K 120fps recording, 3-axis mechanical gimbal stabilization, rotatable 2\" OLED touchscreen for vertical and horizontal shooting, and ActiveTrack 6.0.",
     "shortDescription": "Pocket gimbal camera with 1-inch CMOS sensor, 4K 120fps, and rotatable OLED screen.",
     "features": [
@@ -1601,7 +1601,7 @@ export const PRODUCTS = [
     "rating": 4.9,
     "reviews": 1420,
     "stockQuantity": 5,
-    "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?auto=format&fit=crop&w=600&q=80",
     "description": "The benchmark hybrid full-frame mirrorless camera: 33MP Exmor R back-illuminated sensor, BIONZ XR processing, 4K 60p 10-bit 4:2:2 recording, 759-point phase detection AF, and S-Cinetone color profile.",
     "shortDescription": "Pro full-frame mirrorless with 33MP sensor, 4K 60p 10-bit, and 759-point autofocus.",
     "features": [
@@ -1632,7 +1632,7 @@ export const PRODUCTS = [
     "rating": 4.8,
     "reviews": 1820,
     "stockQuantity": 10,
-    "image": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1581591524425-c7e0978865fc?auto=format&fit=crop&w=600&q=80",
     "description": "Fujifilm X-T30 II blends retro dials with a 26.1MP X-Trans CMOS 4 sensor, X-Processor 4, 18 iconic Film Simulation modes (including Classic Neg), and 6K-oversampled 4K 30p video.",
     "shortDescription": "Vintage aesthetic mirrorless camera with 26.1MP X-Trans sensor and 18 Film Simulations.",
     "features": [
@@ -1663,7 +1663,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 1450,
     "stockQuantity": 14,
-    "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1508898578281-774ac4893c0c?auto=format&fit=crop&w=600&q=80",
     "description": "Nikon Z 50 brings the revolutionary wide Z mount to a compact DX mirrorless body with a 20.9MP sensor, EXPEED 6 engine, flip-down selfie touchscreen, and Eye Detection AF.",
     "shortDescription": "Compact Z-mount mirrorless camera with 20.9MP sensor, 4K video, and flip-down selfie LCD.",
     "features": [
@@ -1694,7 +1694,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 2780,
     "stockQuantity": 20,
-    "image": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80",
     "description": "Insta360 X3 captures 5.7K 360-degree Active HDR video with dual 1/2\" 48MP sensors, Invisible Selfie Stick effect, massive 2.29\" tempered glass touchscreen, and waterproof up to 10m.",
     "shortDescription": "Pocket 5.7K 360-degree action camera with Invisible Selfie Stick effect and 10m waterproof.",
     "features": [
@@ -1726,7 +1726,7 @@ export const PRODUCTS = [
     "rating": 4.4,
     "reviews": 1210,
     "stockQuantity": 24,
-    "image": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1495707902641-75cac588d2e9?auto=format&fit=crop&w=600&q=80",
     "description": "Canon PowerShot V10 is an all-in-one pocket vlogging camera featuring a built-in multi-angle stand, large omnidirectional stereo microphones, 1\" CMOS sensor, and wide 19mm lens.",
     "shortDescription": "Pocketable all-in-one vlogging camera with 1-inch sensor, built-in stand, and studio mics.",
     "features": [
@@ -1757,7 +1757,7 @@ export const PRODUCTS = [
     "rating": 4.5,
     "reviews": 3610,
     "stockQuantity": 18,
-    "image": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1519638831568-d9897f54ed69?auto=format&fit=crop&w=600&q=80",
     "description": "The trusted workhorse for content creators on a budget: 16MP Micro Four Thirds sensor, 4K video recording, high-resolution OLED viewfinder, and articulating touchscreen with interchangeable lenses.",
     "shortDescription": "Proven 4K mirrorless camera with articulating touchscreen and interchangeable lenses.",
     "features": [
@@ -1788,7 +1788,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 8940,
     "stockQuantity": 0,
-    "image": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1520390138845-fd2d229dd553?auto=format&fit=crop&w=600&q=80",
     "description": "Fujifilm Instax Mini 12 instant camera features automatic exposure for bright photos anywhere, built-in selfie mirror, close-up mode with parallax correction, and instant 90-second photo development.",
     "shortDescription": "Instant print camera with automatic flash exposure, selfie mirror, and close-up lens.",
     "features": [
@@ -1819,7 +1819,7 @@ export const PRODUCTS = [
     "rating": 4.8,
     "reviews": 2890,
     "stockQuantity": 18,
-    "image": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=600&q=80",
     "description": "Apple Watch Series 9 features the S9 SiP chip, enabling the magical Double Tap gesture, brighter 2000-nit Always-On Retina display, and on-device Siri with health data access.",
     "shortDescription": "Advanced health and fitness smartwatch with S9 chip, Double Tap, and ECG.",
     "features": [
@@ -1851,7 +1851,7 @@ export const PRODUCTS = [
     "rating": 4.3,
     "reviews": 14500,
     "stockQuantity": 65,
-    "image": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=600&q=80",
     "description": "Noise ColorFit Pulse 2 Max is a feature-packed entry-level smartwatch with a massive 1.85\" bright TFT screen, Bluetooth calling with Tru Sync technology, and 100 sports modes.",
     "shortDescription": "Budget smartwatch with 1.85\" display, Bluetooth calling, and 10-day battery.",
     "features": [
@@ -1883,7 +1883,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 3210,
     "stockQuantity": 22,
-    "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
     "description": "Amazfit GTR 4 is built for sports enthusiasts with industry-first dual-band circularly-polarized GPS tracking, 14-day battery life, 1.43\" HD AMOLED display, and Alexa built-in.",
     "shortDescription": "Pro fitness smartwatch with dual-band GPS, 14-day battery, and AMOLED display.",
     "features": [
@@ -1914,7 +1914,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 4120,
     "stockQuantity": 24,
-    "image": "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1510017803434-a899398421b3?auto=format&fit=crop&w=600&q=80",
     "description": "Samsung Galaxy Watch 6 features a 20% larger Super AMOLED display with slimmer bezels, advanced sleep coaching, BioActive sensor for body composition (BIA), and Wear OS with Google Play apps.",
     "shortDescription": "Wear OS smartwatch with Body Composition analysis, ECG, and Super AMOLED screen.",
     "features": [
@@ -1946,7 +1946,7 @@ export const PRODUCTS = [
     "rating": 4.2,
     "reviews": 18900,
     "stockQuantity": 80,
-    "image": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?auto=format&fit=crop&w=600&q=80",
     "description": "Fire-Boltt Phoenix Pro features a 1.39\" circular high-resolution display, Bluetooth calling with high-quality speaker and microphone, 120+ sports modes, and metal luxury unibody.",
     "shortDescription": "Round dial Bluetooth calling smartwatch with metal casing and 120+ sports modes.",
     "features": [
@@ -1977,7 +1977,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 2140,
     "stockQuantity": 16,
-    "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1544117519-31a4b719223d?auto=format&fit=crop&w=600&q=80",
     "description": "OnePlus Watch 2 features innovative Dual-Engine Architecture (Snapdragon W5 + BES2700 chips), delivering Wear OS 4 versatility with a groundbreaking 100 hours of battery life in Smart Mode.",
     "shortDescription": "Wear OS 4 smartwatch with Dual-Engine chip architecture and 100-hour battery life.",
     "features": [
@@ -2009,7 +2009,7 @@ export const PRODUCTS = [
     "rating": 4.8,
     "reviews": 1780,
     "stockQuantity": 14,
-    "image": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1551816230-ef5deaed4a26?auto=format&fit=crop&w=600&q=80",
     "description": "Designed for runners and endurance athletes, the Garmin Forerunner 55 tracks pace, distance, intervals, and heart rate with daily suggested workouts, Garmin Coach, and 2 weeks of battery life.",
     "shortDescription": "Dedicated running GPS smartwatch with Garmin Coach guidance and 2-week battery.",
     "features": [
@@ -2040,7 +2040,7 @@ export const PRODUCTS = [
     "rating": 4.1,
     "reviews": 21300,
     "stockQuantity": 75,
-    "image": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80",
     "description": "boAt Wave Call 2 features a 1.83\" HD display, advanced Bluetooth calling with saved contacts, 700+ active sports modes with Crest App health ecosystem, and custom watch face studio.",
     "shortDescription": "Entry-level Bluetooth calling watch with 1.83\" display and Crest App health ecosystem.",
     "features": [
@@ -2071,7 +2071,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 4890,
     "stockQuantity": 20,
-    "image": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?auto=format&fit=crop&w=600&q=80",
     "description": "Apple Watch SE packs essential fitness and safety tracking including Crash Detection, Fall Detection, Heart rate notifications, Retina display, and water resistance to 50 meters.",
     "shortDescription": "Essential Apple Watch experience with Crash Detection, Retina screen, and WR50 water resistance.",
     "features": [
@@ -2102,7 +2102,7 @@ export const PRODUCTS = [
     "rating": 4.4,
     "reviews": 2780,
     "stockQuantity": 30,
-    "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80",
     "description": "Titan Smart Touch 2 marries premium watchmaking craftsmanship with smart tech: 1.78\" Super AMOLED display with Always-On display, SingleSync Bluetooth calling, and premium metal buckle strap.",
     "shortDescription": "Super AMOLED display smartwatch by Titan with premium aluminum body and Bluetooth calling.",
     "features": [
@@ -2133,7 +2133,7 @@ export const PRODUCTS = [
     "rating": 4.9,
     "reviews": 810,
     "stockQuantity": 0,
-    "image": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=600&q=80",
     "description": "The ultimate multisport expedition smartwatch: Power Sapphire solar charging lens, built-in LED flashlight, multi-band GPS with SatIQ, TopoActive maps, and up to 37 days of battery life.",
     "shortDescription": "Ultra-endurance multisport solar GPS smartwatch with titanium bezel and LED flashlight.",
     "features": [
@@ -2165,7 +2165,7 @@ export const PRODUCTS = [
     "rating": 4.4,
     "reviews": 8730,
     "stockQuantity": 35,
-    "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=600&q=80",
     "description": "The JBL Flip 6 delivers powerful JBL Original Pro Sound with exceptional clarity thanks to its 2-way speaker system, racetrack-shaped woofer, and separate tweeter.",
     "shortDescription": "Waterproof portable speaker with 12-hour battery and powerful bass.",
     "features": [
@@ -2196,7 +2196,7 @@ export const PRODUCTS = [
     "rating": 4.3,
     "reviews": 11200,
     "stockQuantity": 55,
-    "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=600&q=80",
     "description": "boAt Stone 350 portable wireless speaker punches out 10W stereo sound with immersive bass, IPX7 splash resistance, and up to 12 hours of uninterrupted party music.",
     "shortDescription": "Compact 10W portable speaker with IPX7 water resistance and 12h playtime.",
     "features": [
@@ -2227,7 +2227,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 15400,
     "stockQuantity": 45,
-    "image": "https://images.unsplash.com/photo-1589003077984-894e133dabab?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1589003077984-894e133dabab?auto=format&fit=crop&w=600&q=80",
     "description": "JBL Go 3 features bold styling and rich JBL Pro Sound. With its eye-catching design, vibrant fabrics, and IP67 waterproof/dustproof rating, it's the ultimate pocket speaker.",
     "shortDescription": "Ultra-portable pocket speaker with punchy JBL Pro sound and IP67 rating.",
     "features": [
@@ -2258,7 +2258,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 2890,
     "stockQuantity": 20,
-    "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1558089687-f282ffcbc126?auto=format&fit=crop&w=600&q=80",
     "description": "Marshall Emberton II delivers 360-degree True Stereophonic sound, legendary Marshall vintage rock aesthetics, 30+ hours of portable playtime, and Stack Mode to connect multiple speakers.",
     "shortDescription": "Iconic vintage portable speaker with 360-degree sound and 30+ hours playtime.",
     "features": [
@@ -2289,7 +2289,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 6420,
     "stockQuantity": 30,
-    "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80",
     "description": "Sony SRS-XB100 is a super-compact travel speaker delivering punchy Extra Bass with a Sound Diffusion Processor, versatile multiway strap, 16-hour battery, and hands-free calls with Echo Cancelling.",
     "shortDescription": "Compact Extra Bass speaker with Sound Diffusion Processor and 16-hour battery.",
     "features": [
@@ -2320,7 +2320,7 @@ export const PRODUCTS = [
     "rating": 4.8,
     "reviews": 3450,
     "stockQuantity": 18,
-    "image": "https://images.unsplash.com/photo-1589003077984-894e133dabab?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1543512214-318c7553f230?auto=format&fit=crop&w=600&q=80",
     "description": "Bose SoundLink Flex features proprietary PositionIQ technology that automatically optimizes sound orientation, IP67 waterproof/dustproof design that floats in water, and powder-coated steel grille.",
     "shortDescription": "Outdoor Bluetooth speaker with PositionIQ technology that floats in water.",
     "features": [
@@ -2351,7 +2351,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 4890,
     "stockQuantity": 25,
-    "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1570784332176-fdd73da66f03?auto=format&fit=crop&w=600&q=80",
     "description": "Tribit StormBox Micro 2 delivers shocking 10W bass with XBass technology, doubles as a powerbank via RunStretch technology, and includes a tear-resistant silicone bike attachment strap.",
     "shortDescription": "10W pocket speaker with XBass technology that doubles as a phone powerbank.",
     "features": [
@@ -2383,7 +2383,7 @@ export const PRODUCTS = [
     "rating": 4.9,
     "reviews": 1820,
     "stockQuantity": 10,
-    "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=600&q=80",
     "description": "Marshall Stanmore III fills the room with sweeping, expansive home audio. Re-engineered with outward-angled tweeters and updated waveguides, Dynamic Loudness, and RCA/3.5mm/Bluetooth connectivity.",
     "shortDescription": "Iconic vintage home speaker with expansive 80W stereo sound and brass controls.",
     "features": [
@@ -2414,7 +2414,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 6780,
     "stockQuantity": 22,
-    "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80",
     "description": "JBL Charge 5 features an optimized long-excursion driver, separate tweeter, and dual JBL bass radiators. Delivers up to 20 hours of playtime and an integrated 7500mAh USB powerbank.",
     "shortDescription": "Heavy-duty outdoor speaker with 20-hour battery and built-in powerbank.",
     "features": [
@@ -2445,7 +2445,7 @@ export const PRODUCTS = [
     "rating": 4.3,
     "reviews": 5210,
     "stockQuantity": 30,
-    "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=600&q=80",
     "description": "boAt PartyPal 50 brings party vibes with dynamic RGB LED light shows, 20W stereo output, integrated microphone karaoke input, and multiple playback modes including TF card and USB.",
     "shortDescription": "20W karaoke party speaker with dynamic RGB light effects and microphone jack.",
     "features": [
@@ -2476,7 +2476,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 1420,
     "stockQuantity": 0,
-    "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80",
     "description": "Sony SRS-XG300 is a powerful portable boombox featuring X-Balanced Speaker Units, retractable carry handle, ambient ring illumination, 25 hours of battery life, and Mega Bass mode.",
     "shortDescription": "High-power boombox with X-Balanced speakers, retractable handle, and 25-hour battery.",
     "features": [
@@ -2507,7 +2507,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 3210,
     "stockQuantity": 30,
-    "image": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=600&q=80",
     "description": "The MX Master 3S is Logitech's flagship productivity mouse with an 8K DPI sensor that tracks on glass, 90% quieter clicks, and MagSpeed electromagnetic scrolling.",
     "shortDescription": "Premium ergonomic productivity mouse with 8K DPI sensor and MagSpeed scroll.",
     "features": [
@@ -2539,7 +2539,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 1540,
     "stockQuantity": 20,
-    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80",
     "description": "The Keychron K2 Pro is a compact 75% wireless hot-swappable mechanical keyboard featuring QMK/VIA key remapping, sound-absorbing foam, and Mac/Windows layout.",
     "shortDescription": "Compact 75% wireless mechanical keyboard with hot-swap switches and QMK support.",
     "features": [
@@ -2570,7 +2570,7 @@ export const PRODUCTS = [
     "rating": 4.5,
     "reviews": 6780,
     "stockQuantity": 45,
-    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&w=600&q=80",
     "description": "Defy boring with the Logitech Pebble Keys 2 K380s slim wireless Bluetooth keyboard. Ultra-portable, lightweight, made with recycled plastic, with 36-month battery life.",
     "shortDescription": "Slim, quiet Bluetooth keyboard with 3-year battery and 3-device switching.",
     "features": [
@@ -2600,7 +2600,7 @@ export const PRODUCTS = [
     "rating": 4.8,
     "reviews": 4890,
     "stockQuantity": 40,
-    "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=600&q=80",
     "description": "Anker 735 Charger (GaNPrime 65W) powers 3 devices simultaneously with 2 USB-C ports and 1 USB-A port. Fast-charges MacBooks, iPhones, Samsung phones, and iPads in a pocketable form.",
     "shortDescription": "Compact 3-port 65W GaN fast charger for MacBooks, phones, and tablets.",
     "features": [
@@ -2630,7 +2630,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 9210,
     "stockQuantity": 30,
-    "image": "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=600&q=80",
     "description": "The SanDisk Extreme Portable SSD delivers blazing fast NVMe solid-state performance with up to 1050MB/s read speeds, IP55 water and dust resistance, and 2-meter drop protection.",
     "shortDescription": "Rugged 1TB external NVMe SSD with 1050MB/s speed and IP55 water resistance.",
     "features": [
@@ -2661,7 +2661,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 11400,
     "stockQuantity": 35,
-    "image": "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80",
     "description": "The industry-standard webcam for remote work and streaming: Full HD 1080p video at 30fps, automatic HD light correction, dual stereo microphones, and premium glass lens.",
     "shortDescription": "Full HD 1080p streaming & meeting webcam with dual stereo mics and light correction.",
     "features": [
@@ -2692,7 +2692,7 @@ export const PRODUCTS = [
     "rating": 4.3,
     "reviews": 22100,
     "stockQuantity": 90,
-    "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80",
     "description": "boAt Dual Port 20W wall adapter features a USB-C Power Delivery port and a USB-A Quick Charge port with smart IC safety protection against overheating and overvoltage.",
     "shortDescription": "Super-budget 20W dual-port wall charger supporting PD & QC fast charging.",
     "features": [
@@ -2722,7 +2722,7 @@ export const PRODUCTS = [
     "rating": 4.5,
     "reviews": 3410,
     "stockQuantity": 25,
-    "image": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=600&q=80",
     "description": "Magic Mouse is wireless and rechargeable, with an optimized foot design that lets it glide smoothly across your desk. The Multi-Touch surface allows simple gestures like swiping between web pages.",
     "shortDescription": "Wireless Bluetooth mouse with Multi-Touch gesture surface and USB-C port.",
     "features": [
@@ -2751,7 +2751,7 @@ export const PRODUCTS = [
     "rating": 4.6,
     "reviews": 4820,
     "stockQuantity": 30,
-    "image": "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1544652478-6653e09f18a2?auto=format&fit=crop&w=600&q=80",
     "description": "Expand a single USB-C port into a 9-port workstation: 4K 60Hz HDMI, 100W Power Delivery pass-through charging, Gigabit Ethernet, SD/TF card reader, and 3x USB 3.0 ports in heat-dissipating aluminum.",
     "shortDescription": "9-in-1 aluminum USB-C multiport hub with 4K 60Hz HDMI, 100W PD, and Gigabit LAN.",
     "features": [
@@ -2780,7 +2780,7 @@ export const PRODUCTS = [
     "rating": 4.7,
     "reviews": 5210,
     "stockQuantity": 28,
-    "image": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1629429408209-1f912961dbd8?auto=format&fit=crop&w=600&q=80",
     "description": "The MagSafe Charger makes wireless charging a snap. Perfectly aligned magnets attach to your iPhone 12 or later to provide faster wireless charging up to 15W.",
     "shortDescription": "Magnetic wireless charger with up to 15W fast charge for iPhone and AirPods.",
     "features": [
@@ -2810,7 +2810,7 @@ export const PRODUCTS = [
     "rating": 4.5,
     "reviews": 14200,
     "stockQuantity": 0,
-    "image": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=500&q=80",
+    "image": "https://images.unsplash.com/photo-1626218174358-7769486c4b79?auto=format&fit=crop&w=600&q=80",
     "description": "Razer DeathAdder Essential is an iconic ergonomic gaming and productivity mouse featuring a 6400 DPI optical sensor, mechanical switches rated for 10 million clicks, and green LED lighting.",
     "shortDescription": "Ergonomic wired gaming mouse with 6,400 DPI optical sensor and 5 Hyperesponse buttons.",
     "features": [

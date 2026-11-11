@@ -6,7 +6,7 @@ except Exception:
     pass
 import json
 import re
-from typing import Optional
+from typing import Optional, Union
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel
@@ -17,6 +17,7 @@ from app.utils.auth import get_current_user
 from app.utils.ai import gemini_assistant
 import google.generativeai as genai
 from app.config import settings
+from app.services.channel3 import channel3_service
 
 router = APIRouter(prefix="/planner", tags=["Smart Planner"])
 
@@ -33,19 +34,24 @@ class PlanGenerateRequest(BaseModel):
 
 class PlanItemOut(BaseModel):
     id: Optional[int] = None
-    product_id: int
+    product_id: Union[int, str]
     slug: str
     name: str
     brand: str
     price: float
     original_price: Optional[float] = None
     image_url: Optional[str] = None
-    rating: float
+    rating: float = 4.5
     badge: Optional[str] = None
     short_description: Optional[str] = None
     category: str
-    in_stock: bool
+    in_stock: bool = True
     ai_explanation: str
+    specs: Optional[dict] = {}
+    features: Optional[list[str]] = []
+    is_external: Optional[bool] = False
+    merchant_name: Optional[str] = None
+    external_url: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -84,7 +90,55 @@ class ReplaceItemRequest(BaseModel):
     requirements: str = ""
 
 
+class AlternativeProductOut(BaseModel):
+    product: PlanItemOut
+    price_difference: float
+    recommendation_reason: str
+    tier: str  # 'budget_saver', 'premium_upgrade', 'balanced'
+
+
+class AlternativesResponse(BaseModel):
+    category: str
+    current_product_slug: str
+    budget_ceiling: float
+    alternatives: list[AlternativeProductOut]
+
+
+class ComparisonRequest(BaseModel):
+    slugs: list[str]
+    user_requirements: Optional[str] = ""
+
+
+class ComparisonResponse(BaseModel):
+    products: list[PlanItemOut]
+    ai_verdict: str
+    best_value_slug: Optional[str] = None
+    best_performance_slug: Optional[str] = None
+
+
 # ─────────────────────────── Helpers ───────────────────────────────────────
+
+def extract_categories_from_text(text: str) -> list[str]:
+    t = text.lower()
+    cats = []
+    if re.search(r'\b(laptop|laptops|notebook|notebooks|macbook|pc|computer)\b', t):
+        cats.append('laptops')
+    if re.search(r'\b(phone|phones|smartphone|smartphones|mobile|mobiles|iphone|android)\b', t):
+        cats.append('smartphones')
+    if re.search(r'\b(headphone|headphones|earphone|earphones|earbuds|airpods|headset|audio)\b', t):
+        cats.append('headphones')
+    if re.search(r'\b(tablet|tablets|ipad)\b', t):
+        cats.append('tablets')
+    if re.search(r'\b(camera|cameras|dslr|lens)\b', t):
+        cats.append('cameras')
+    if re.search(r'\b(watch|watches|smartwatch|smartwatches)\b', t):
+        cats.append('smartwatches')
+    if re.search(r'\b(speaker|speakers)\b', t):
+        cats.append('speakers')
+    if re.search(r'\b(mouse|keyboard|charger|accessory|accessories|adapter|cable|case)\b', t):
+        cats.append('accessories')
+    return cats
+
 
 def _build_planner_catalog(db: Session, categories: list[str] = None, max_price: float = None) -> str:
     """Build catalog JSON filtered by categories/price for planner context."""
@@ -127,6 +181,8 @@ def _product_to_item_out(p: Product, explanation: str, item_id: int = None) -> P
         category=p.category.slug if p.category else "",
         in_stock=p.in_stock,
         ai_explanation=explanation,
+        specs=p.specs or {},
+        features=p.features or [],
     )
 
 
@@ -184,10 +240,13 @@ If no suitable combination exists within budget, return: PLAN_JSON: []"""
         response = model.generate_content(prompt)
         text = response.text.strip()
 
-        # Extract PLAN_JSON
+        # Extract PLAN_JSON or JSON array
         match = re.search(r'PLAN_JSON:\s*(\[.*?\])', text, re.DOTALL)
+        if not match:
+            match = re.search(r'(\[\s*\{.*?\}\s*\])', text, re.DOTALL)
         if match:
-            plan_data = json.loads(match.group(1))
+            content = match.group(1)
+            plan_data = json.loads(content)
             return [item for item in plan_data if isinstance(item, dict) and "slug" in item]
     except Exception as e:
         print(f"Gemini planner error: {e}")
@@ -208,14 +267,19 @@ async def generate_plan(
     if not payload.requirements.strip():
         raise HTTPException(status_code=400, detail="Requirements cannot be empty")
 
+    # If no categories were explicitly selected, auto-detect from natural language requirements
+    effective_categories = payload.categories or []
+    if not effective_categories:
+        effective_categories = extract_categories_from_text(payload.requirements)
+
     # Build filtered catalog (only in-stock products within budget)
-    catalog_json = _build_planner_catalog(db, payload.categories or None, payload.budget)
+    catalog_json = _build_planner_catalog(db, effective_categories or None, payload.budget)
 
     # Call Gemini
     plan_items_raw = await _call_gemini_for_plan(
         budget=payload.budget,
         requirements=payload.requirements,
-        categories=payload.categories,
+        categories=effective_categories,
         preferred_brands=payload.preferred_brands,
         additional_requirements=payload.additional_requirements,
         catalog_json=catalog_json,
@@ -252,8 +316,8 @@ async def generate_plan(
 
     # Fallback: if Gemini returned nothing, do a smart DB query
     if not items_out:
-        # Try to pick one good product from each requested category within budget
-        cats_to_try = payload.categories if payload.categories else []
+        # Try to pick one good product from each detected category within budget
+        cats_to_try = effective_categories if effective_categories else ['laptops', 'headphones', 'accessories']
         remaining_budget = payload.budget
         for cat_slug in cats_to_try:
             if remaining_budget <= 0:
@@ -432,6 +496,110 @@ def delete_plan(
     db.delete(plan)
     db.commit()
     return {"message": "Plan deleted"}
+
+
+@router.get("/alternatives", response_model=AlternativesResponse)
+def get_alternatives(
+    category: str,
+    current_slug: str,
+    max_price: float,
+    current_price: float,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Retrieve ranked alternative recommendations in the same category within budget."""
+    candidates = (
+        db.query(Product)
+        .options(joinedload(Product.category))
+        .join(Product.category)
+        .filter(Category.slug == category)
+        .filter(Product.in_stock == True)
+        .filter(Product.price <= max_price)
+        .filter(Product.slug != current_slug)
+        .order_by(Product.rating.desc())
+        .limit(6)
+        .all()
+    )
+
+    alternatives = []
+    for cand in candidates:
+        diff = round(cand.price - current_price, 2)
+        if diff < -1000:
+            tier = "budget_saver"
+            reason = f"Saves ₹{abs(diff):,.0f} compared to current choice while offering a solid {cand.rating}★ rating."
+        elif diff > 1000:
+            tier = "premium_upgrade"
+            reason = f"Upgrade for ₹{abs(diff):,.0f} extra with enhanced features and specs."
+        else:
+            tier = "balanced"
+            reason = f"Similar price point (diff: ₹{abs(diff):,.0f}) with alternative brand & styling."
+
+        item_out = _product_to_item_out(cand, cand.short_description or cand.name)
+        alternatives.append(AlternativeProductOut(
+            product=item_out,
+            price_difference=diff,
+            recommendation_reason=reason,
+            tier=tier,
+        ))
+
+    return AlternativesResponse(
+        category=category,
+        current_product_slug=current_slug,
+        budget_ceiling=max_price,
+        alternatives=alternatives,
+    )
+
+
+@router.post("/compare-products", response_model=ComparisonResponse)
+async def compare_planner_products(
+    payload: ComparisonRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Perform side-by-side spec comparison with AI verdict."""
+    if not payload.slugs:
+        raise HTTPException(status_code=400, detail="Must provide at least 1 product slug to compare")
+
+    products = (
+        db.query(Product)
+        .options(joinedload(Product.category))
+        .filter(Product.slug.in_(payload.slugs))
+        .all()
+    )
+
+    items_out = [_product_to_item_out(p, p.short_description or "") for p in products]
+
+    if not items_out:
+        raise HTTPException(status_code=404, detail="No products found matching slugs")
+
+    # Determine best value (highest rating per thousand rupees)
+    best_val = min(items_out, key=lambda x: x.price)
+    best_perf = max(items_out, key=lambda x: (x.rating, -x.price))
+
+    verdict = f"Comparing {len(items_out)} items. The {best_val.name} is the most economical choice at ₹{best_val.price:,.0f}, while {best_perf.name} offers top evaluation specs."
+
+    # Try Gemini for richer comparative verdict if configured
+    try:
+        genai.configure(api_key=settings.GEMINI_API_KEY, transport="rest")
+        model = genai.GenerativeModel(settings.GEMINI_MODEL)
+        prompt = f"""Compare these {len(items_out)} products for shopping evaluation:
+{json.dumps([{'name': i.name, 'brand': i.brand, 'price': i.price, 'specs': i.specs, 'features': i.features} for i in items_out], ensure_ascii=False)}
+
+User requirements: {payload.user_requirements or 'General shopping guidance'}
+
+Provide a 2-3 sentence concise comparative recommendation stating which product is best for budget and which is best for performance."""
+        res = model.generate_content(prompt)
+        if res and res.text:
+            verdict = res.text.strip()
+    except Exception:
+        pass
+
+    return ComparisonResponse(
+        products=items_out,
+        ai_verdict=verdict,
+        best_value_slug=best_val.slug,
+        best_performance_slug=best_perf.slug,
+    )
 
 
 @router.post("/replace-item", response_model=PlanItemOut)

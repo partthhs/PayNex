@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Send, Zap, Info, X, Trash2, GitCompare, DollarSign,
-  SlidersHorizontal, ShoppingCart, Eye, Star, Check
+  SlidersHorizontal, ShoppingCart, Eye, Star, Check, Bell, Sparkles
 } from 'lucide-react'
 import { PRODUCTS } from '../data/products'
 import { SUGGESTED_PROMPTS } from '../data/sampleData'
@@ -11,6 +11,7 @@ import { useCart } from '../context/CartContext'
 import { aiService } from '../services/aiService'
 import Button from '../components/ui/Button'
 import PriceDisplay from '../components/ui/PriceDisplay'
+import PriceTrackModal from '../components/ui/PriceTrackModal'
 
 let msgId = 0
 const newId = () => ++msgId
@@ -157,6 +158,22 @@ function ContextPanel({ budget, setBudget, prefs, setPrefs, compareItems, remove
         )}
       </div>
 
+      {/* Smart Planner Promo Banner */}
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-4">
+        <div className="flex items-center gap-2 mb-1.5">
+          <Sparkles size={16} className="text-blue-600" />
+          <h4 className="text-xs font-bold text-blue-900">Need a Full Multi-Item Setup?</h4>
+        </div>
+        <p className="text-[11px] text-slate-600 leading-relaxed mb-3">
+          Plan complete workspaces, student bundles, and smart kits within an exact budget ceiling.
+        </p>
+        <Link to="/planner">
+          <Button size="sm" fullWidth className="text-xs">
+            Open Smart Planner
+          </Button>
+        </Link>
+      </div>
+
       <p className="text-[11px] text-slate-400 text-center">Settings apply to the current active session.</p>
     </div>
   )
@@ -170,6 +187,7 @@ export default function Assistant() {
   const [prefs, setPrefs] = useState({ trusted: false, value: false, newer: false })
   const [panelOpen, setPanelOpen] = useState(false)
   const [addedIds, setAddedIds] = useState([])
+  const [trackProduct, setTrackProduct] = useState(null)
   const bottomRef = useRef(null)
 
   const { compareItems, addToCompare, removeFromCompare, isInCompare } = useCompare()
@@ -239,10 +257,16 @@ export default function Assistant() {
     }
 
     try {
+      const chatHistory = messages.slice(-8).map(m => ({
+        role: m.role === 'user' ? 'user' : 'assistant',
+        content: m.text,
+      }))
+
       const res = await aiService.chat({
         message: text,
         budget: effectiveBudget,
         conversationId,
+        history: chatHistory,
       })
       if (res.conversation_id) setConversationId(res.conversation_id)
 
@@ -455,10 +479,18 @@ export default function Assistant() {
                               </button>
                               <Link
                                 to={`/product/${p.slug || p.id}`}
-                                className="h-7 px-2.5 text-[11px] font-medium border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-1 transition-colors"
+                                className="h-7 px-2 text-[11px] font-medium border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-1 transition-colors"
                               >
                                 <Eye size={12} /> View
                               </Link>
+                              <button
+                                type="button"
+                                onClick={() => setTrackProduct(p)}
+                                title="Track price drop"
+                                className="h-7 px-2 text-[11px] font-medium border border-slate-200 rounded-lg text-slate-600 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 flex items-center justify-center gap-1 transition-colors"
+                              >
+                                <Bell size={12} />
+                              </button>
                             </div>
                             <button
                               onClick={() => inComp ? removeFromCompare(p.id) : addToCompare(p)}
@@ -549,6 +581,12 @@ export default function Assistant() {
           </div>
         </div>
       )}
+      {/* Price Track Modal */}
+      <PriceTrackModal
+        product={trackProduct}
+        isOpen={Boolean(trackProduct)}
+        onClose={() => setTrackProduct(null)}
+      />
     </div>
   )
 }

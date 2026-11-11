@@ -50,10 +50,12 @@ export default function Cart() {
         <div className="flex-1 space-y-3">
           {cartItems.map(({ product: p, quantity }) => (
             <div key={p.id} className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 flex gap-4 items-center">
-              <img
-                src={p.image} alt={p.name} onError={imgFallback}
-                className="w-20 h-20 object-cover rounded-lg bg-slate-50 border border-slate-100 shrink-0"
-              />
+              <div className="w-20 h-20 rounded-lg bg-slate-50 border border-slate-100 shrink-0 p-1 flex items-center justify-center">
+                <img
+                  src={p.image} alt={p.name} onError={imgFallback}
+                  className="w-full h-full object-contain"
+                />
+              </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">{p.brand}</p>
                 <p className="text-sm font-semibold text-slate-900 mb-1 leading-snug">{p.name}</p>

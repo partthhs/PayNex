@@ -10,6 +10,7 @@ from app.models import User, AIConversation, AIMessage, MessageRole, Product, Ca
 from app.schemas import ChatRequest, ChatResponse, ChatProductRef
 from app.utils.auth import get_optional_current_user, get_current_user
 from app.utils.ai import gemini_assistant, extract_budget, extract_category
+from app.services.channel3 import channel3_service
 from app.services.activity import log_activity
 
 router = APIRouter(prefix="/ai", tags=["AI Assistant"])
@@ -64,6 +65,23 @@ async def chat(
             {"role": msg.role.value, "content": msg.content}
             for msg in conv.messages
         ]
+    elif payload.history:
+        history = payload.history
+
+    # Inherit conversation context (category & budget) for follow-up turns
+    if not detected_category and history:
+        for prev in reversed(history):
+            c = extract_category(prev.get("content", ""))
+            if c:
+                detected_category = c
+                break
+
+    if effective_budget is None and history:
+        for prev in reversed(history):
+            b = extract_budget(prev.get("content", ""))
+            if b:
+                effective_budget = b
+                break
 
     # 2. Build catalog context
     catalog_json = _build_catalog_json(db)
@@ -102,6 +120,38 @@ async def chat(
         if effective_budget is not None:
             query = query.filter(Product.price <= effective_budget)
         matched_products = query.order_by(Product.rating.desc()).limit(3).all()
+
+    # 5b. Supplement with Channel3 verified partner products if configured
+    external_refs = []
+    if channel3_service.is_configured:
+        try:
+            ch3_results = await channel3_service.search_products(payload.message, limit=3)
+            for item in ch3_results:
+                if effective_budget is not None and item.get("price", 0) > effective_budget:
+                    continue
+                external_refs.append(
+                    ChatProductRef(
+                        id=item["id"],
+                        slug=item["slug"],
+                        name=item["name"],
+                        brand=item["brand"],
+                        price=item["price"],
+                        original_price=item["original_price"],
+                        image_url=item["image_url"],
+                        rating=4.5,
+                        reviews_count=20,
+                        badge=item.get("badge", "Verified Partner"),
+                        short_description=item.get("short_description", ""),
+                        in_stock=True,
+                        features=[],
+                        category="External Partner",
+                        is_external=True,
+                        merchant_name=item.get("merchant_name"),
+                        external_url=item.get("external_url")
+                    )
+                )
+        except Exception:
+            pass
 
     # 6. Ensure the text accurately explains if no items exist within budget
     response_text = result["text"]
@@ -158,9 +208,10 @@ async def chat(
             in_stock=p.in_stock,
             features=p.features or [],
             category=p.category.slug if p.category else None,
+            is_external=False,
         )
         for p in matched_products
-    ]
+    ] + external_refs
 
     return ChatResponse(
         conversation_id=conv.id if conv else None,

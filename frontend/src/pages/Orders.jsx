@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { Package, CheckCircle } from 'lucide-react'
 import { orderService, paymentService } from '../services/orderService'
 import { useAuth } from '../context/AuthContext'
+import { useCart } from '../context/CartContext'
 import Badge from '../components/ui/Badge'
 import EmptyState from '../components/ui/EmptyState'
 import Button from '../components/ui/Button'
@@ -14,20 +15,28 @@ export default function Orders() {
   const [orders, setOrders] = useState([])
   const [_loading, setLoading] = useState(true)
   const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [notification, setNotification] = useState(null)
   const { isAuthenticated } = useAuth()
+  const { clearCart, refreshCart } = useCart()
+  const capturedRef = useRef(false)
 
   useEffect(() => {
     async function load() {
       // Check for PayPal return params
       const paypalToken = searchParams.get('token')
-      if (paypalToken && searchParams.get('paypal_success')) {
+      if (paypalToken && searchParams.get('paypal_success') && !capturedRef.current) {
+        capturedRef.current = true
         try {
           const res = await paymentService.capturePayment(paypalToken)
+          clearCart()
+          refreshCart?.()
           setNotification({
             type: 'success',
             text: `Payment successfully captured! Order #${res.order_id} is confirmed.`,
           })
+          // Clean URL params cleanly
+          navigate('/orders', { replace: true })
         } catch (e) {
           setNotification({
             type: 'error',

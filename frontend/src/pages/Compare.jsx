@@ -62,10 +62,12 @@ export default function Compare() {
                   <X size={13} />
                 </button>
                 <div>
-                  <img
-                    src={p.image} alt={p.name} onError={imgFallback}
-                    className="w-full h-32 object-cover rounded-lg bg-slate-50 mb-3"
-                  />
+                  <div className="w-full h-32 rounded-lg bg-slate-50 mb-3 flex items-center justify-center p-2 border border-slate-100">
+                    <img
+                      src={p.image} alt={p.name} onError={imgFallback}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
                   <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">{p.brand}</p>
                   <p className="text-sm font-bold text-slate-900 mb-2 leading-snug line-clamp-2 h-10">{p.name}</p>
                   <div className="mb-2">

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Sparkles, BrainCircuit, Check, Trash2, RefreshCw, ShoppingCart,
-  Bookmark, Eye, AlertCircle
+  Bookmark, Eye, AlertCircle, GitCompare
 } from 'lucide-react'
 import { plannerService } from '../services/plannerService'
 import { useAuth } from '../context/AuthContext'
@@ -10,6 +10,8 @@ import { useCart } from '../context/CartContext'
 import PageHeader from '../components/ui/PageHeader'
 import Button from '../components/ui/Button'
 import Badge from '../components/ui/Badge'
+import PlannerAlternativesModal from '../components/ui/PlannerAlternativesModal'
+import PlannerCompareModal from '../components/ui/PlannerCompareModal'
 
 const AVAILABLE_CATEGORIES = [
   { slug: 'laptops', label: 'Laptops' },
@@ -44,6 +46,10 @@ export default function SmartPlanner() {
   const [isAddingCart, setIsAddingCart] = useState(false)
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
+
+  // Alternatives & compare modal state
+  const [alternativesModal, setAlternativesModal] = useState({ open: false, item: null, idx: null })
+  const [compareModal, setCompareModal] = useState({ open: false, items: [] })
 
   // Load user's saved plans
   const loadSavedPlans = async () => {
@@ -119,40 +125,42 @@ export default function SmartPlanner() {
     })
   }
 
-  const handleReplaceItem = async (indexToReplace) => {
-    if (!currentPlan) return
-    const itemToReplace = currentPlan.items[indexToReplace]
-    const currentSlugs = currentPlan.items.map(it => it.slug)
+  const handleOpenAlternatives = (item, idx) => {
+    setAlternativesModal({ open: true, item, idx })
+  }
 
-    // Calculate maximum available price for replacement: item's current price + remaining budget
-    const maxItemPrice = itemToReplace.price + currentPlan.remaining_budget
+  const handleSelectAlternative = (replacement) => {
+    if (alternativesModal.idx === null || !currentPlan) return
+    const updatedItems = [...currentPlan.items]
+    updatedItems[alternativesModal.idx] = replacement
+    const newTotal = updatedItems.reduce((sum, item) => sum + item.price, 0)
+    const newRemaining = currentPlan.budget - newTotal
+    const newUtil = currentPlan.budget > 0 ? (newTotal / currentPlan.budget) * 100 : 0
+    setCurrentPlan({
+      ...currentPlan,
+      items: updatedItems,
+      total_cost: Math.round(newTotal * 100) / 100,
+      remaining_budget: Math.round(newRemaining * 100) / 100,
+      budget_utilization: Math.round(newUtil * 10) / 10,
+    })
+    setSuccessMsg(`Replaced with ${replacement.name}`)
+    setTimeout(() => setSuccessMsg(''), 3000)
+    setAlternativesModal({ open: false, item: null, idx: null })
+  }
 
-    try {
-      const replacement = await plannerService.replaceItem({
-        exclude_slugs: currentSlugs,
-        category: itemToReplace.category,
-        max_price: maxItemPrice,
-        requirements: currentPlan.requirements,
-      })
+  const handleCompareWithItem = (currentItem, alternativeItem) => {
+    setAlternativesModal(prev => ({ ...prev, open: false }))
+    setCompareModal({ open: true, items: [currentItem, alternativeItem] })
+  }
 
-      const updatedItems = [...currentPlan.items]
-      updatedItems[indexToReplace] = replacement
-
-      const newTotal = updatedItems.reduce((sum, item) => sum + item.price, 0)
-      const newRemaining = currentPlan.budget - newTotal
-      const newUtil = currentPlan.budget > 0 ? (newTotal / currentPlan.budget) * 100 : 0
-
-      setCurrentPlan({
-        ...currentPlan,
-        items: updatedItems,
-        total_cost: Math.round(newTotal * 100) / 100,
-        remaining_budget: Math.round(newRemaining * 100) / 100,
-        budget_utilization: Math.round(newUtil * 10) / 10,
-      })
-      setSuccessMsg(`Replaced ${itemToReplace.name} with ${replacement.name}`)
-      setTimeout(() => setSuccessMsg(''), 3000)
-    } catch (err) {
-      alert(err.response?.data?.detail || 'No suitable alternative found in this price range.')
+  const handleDirectCompare = (item) => {
+    if (!currentPlan || currentPlan.items.length < 2) return
+    const sameCat = currentPlan.items.filter(i => i.category === item.category)
+    if (sameCat.length >= 2) {
+      setCompareModal({ open: true, items: sameCat })
+    } else {
+      // Compare with all items in plan if only one per category
+      setCompareModal({ open: true, items: [item, currentPlan.items.find(i => i.slug !== item.slug)].filter(Boolean) })
     }
   }
 
@@ -564,11 +572,18 @@ export default function SmartPlanner() {
                           </Link>
                           <div className="flex items-center gap-2">
                             <button
-                              onClick={() => handleReplaceItem(idx)}
-                              className="text-xs font-semibold text-slate-600 hover:text-blue-600 py-1 px-2 rounded-lg hover:bg-slate-100 transition"
-                              title="Find alternative in this category within budget"
+                              onClick={() => handleDirectCompare(item)}
+                              className="text-xs font-semibold text-slate-600 hover:text-purple-600 py-1 px-2 rounded-lg hover:bg-purple-50 transition flex items-center gap-1"
+                              title="Compare with other plan items"
                             >
-                              Replace
+                              <GitCompare size={12} /> Compare
+                            </button>
+                            <button
+                              onClick={() => handleOpenAlternatives(item, idx)}
+                              className="text-xs font-semibold text-slate-600 hover:text-blue-600 py-1 px-2 rounded-lg hover:bg-slate-100 transition"
+                              title="Browse alternatives in this category"
+                            >
+                              Alternatives
                             </button>
                             <button
                               onClick={() => handleRemoveItem(idx)}
@@ -642,6 +657,31 @@ export default function SmartPlanner() {
           </div>
         </div>
       )}
+
+      {/* Alternatives Modal */}
+      <PlannerAlternativesModal
+        isOpen={alternativesModal.open}
+        onClose={() => setAlternativesModal({ open: false, item: null, idx: null })}
+        currentItem={alternativesModal.item}
+        remainingBudget={currentPlan?.remaining_budget || 0}
+        onSelectAlternative={handleSelectAlternative}
+        onCompareWithItem={handleCompareWithItem}
+      />
+
+      {/* Compare Modal */}
+      <PlannerCompareModal
+        isOpen={compareModal.open}
+        onClose={() => setCompareModal({ open: false, items: [] })}
+        itemsToCompare={compareModal.items}
+        onSelectProduct={(product) => {
+          if (!currentPlan) return
+          // If product matches current selected item or category, replace it
+          const idx = currentPlan.items.findIndex(i => i.category === product.category)
+          if (idx >= 0) {
+            handleSelectAlternative(product)
+          }
+        }}
+      />
     </div>
   )
 }

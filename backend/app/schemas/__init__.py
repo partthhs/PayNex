@@ -95,23 +95,27 @@ class CategoryResponse(BaseModel):
 # ─────────────────────────── Product ────────────────────────────────────────
 
 class ProductResponse(BaseModel):
-    id: int
+    id: Union[int, str]
     slug: str
     name: str
     brand: str
-    category: CategoryResponse
+    category: Optional[CategoryResponse] = None
     price: float
     original_price: Optional[float]
-    rating: float
-    reviews_count: int
+    rating: float = 4.5
+    reviews_count: int = 25
     image_url: Optional[str]
     description: Optional[str]
     short_description: Optional[str]
-    features: list[str]
-    specs: dict[str, Any]
-    badge: Optional[str]
-    in_stock: bool
+    features: list[str] = []
+    specs: dict[str, Any] = {}
+    badge: Optional[str] = None
+    in_stock: bool = True
     stock_quantity: int = 15
+    is_external: Optional[bool] = False
+    merchant_name: Optional[str] = None
+    external_url: Optional[str] = None
+    currency: Optional[str] = "INR"
 
     class Config:
         from_attributes = True
@@ -261,10 +265,11 @@ class ChatRequest(BaseModel):
     message: str
     conversation_id: Optional[int] = None
     budget: Optional[float] = None
+    history: Optional[list[dict]] = None
 
 
 class ChatProductRef(BaseModel):
-    id: int
+    id: Union[int, str]
     slug: str
     name: str
     brand: str
@@ -278,6 +283,9 @@ class ChatProductRef(BaseModel):
     in_stock: bool = True
     features: Optional[list[str]] = None
     category: Optional[str] = None
+    is_external: Optional[bool] = False
+    merchant_name: Optional[str] = None
+    external_url: Optional[str] = None
 
 
 class ChatResponse(BaseModel):
